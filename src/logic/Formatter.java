@@ -9,15 +9,7 @@ public class Formatter {
         Left, Right, Center, Equal;
     }
     private Justified justType;
-
-    public Formatter(String i) {
-        input = i;
-        lineSize = 80;
-        wrap = false;
-        isSingleSpaced = true;
-        isSingleColumn = true;
-        justType = Justified.Left;
-    }
+    private String output;
 
     public Formatter() {
         input = "No Input Exists";
@@ -35,8 +27,8 @@ public class Formatter {
 
 
     public String getOutput() {
-
-        return input;
+        
+        return output;
     }
 
     // TODO - Example method, remove after
