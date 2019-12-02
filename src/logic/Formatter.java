@@ -245,7 +245,7 @@ public class Formatter {
 
     // Handles adding things to output with current formatting settings
     // TODO:
-    //      Equally spaced (when fit < 0 needs to be implemented)
+    //      Equally spaced (.replaceAll not working)
     //      Wrap
     private String formatHandler(String input1, String input2)
     {
@@ -305,7 +305,7 @@ public class Formatter {
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
-            else    //TODO 
+            else    //TODO: fix .replaceAll (currently not working) 
             { 
                 int i = 0;
                 int j = 0;
