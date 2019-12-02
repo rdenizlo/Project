@@ -295,17 +295,39 @@ public class Formatter {
                     spaces = spaces + " ";
                 input2.replaceAll(" ", spaces);
                 output = output + input2;
+                output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
             else    //TODO 
             { 
-                int i;
-                int j;
+                int i = 0;
+                int j = 0;
+                int lineEnd;
+                int addedSpaces;
+                String line;
+                String spaces;
                 while (fit < 0)
                 {
                     spaceCount = 0;
-                    
+                    lineEnd = lineSize * j;
+                    if (lineEnd > input2.length())
+                        lineEnd = input2.length();
+                    fit = lineSize - input2.substring(lineEnd).length();
+                    ++j;
+                    lineEnd = lineSize*j;
+                    if (lineEnd > input2.length())
+                        lineEnd = input2.length();
+
+                    addedSpaces = (lineSize - input2.substring(i,lineEnd).length())/spaceCount;
+                    spaces = " ";
+                    for (int i = 0; i < addedSpaces; ++i)
+                        spaces = spaces + " ";
+                    line = input2.subString(i, lineEnd);
+                    line.replaceAll(" ", spaces);
+                    output = output + line;
+
+                    output = output + "\n";
                     if (isSingleSpaced == false)
                         output = output + "\n";
                 }
@@ -319,6 +341,7 @@ public class Formatter {
                 for(int i = 0; i < margin; ++i)
                     output = output + " ";
                 output = output + input2;
+                output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
@@ -342,7 +365,7 @@ public class Formatter {
                     margin = lineSize - input2.substring(i, lineEnd).length();
                     for(int k = 0; k < margin; ++k)
                         output = output + " ";
-                        
+
                     output = output + input2.substring(i, lineEnd);
                     i = lineEnd;
 
@@ -358,6 +381,7 @@ public class Formatter {
             if (fit >= 0)
             {
                 output = output + input2;
+                output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
