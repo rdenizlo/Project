@@ -319,13 +319,17 @@ public class Formatter {
                     if (lineEnd > input2.length())
                         lineEnd = input2.length();
 
-                    addedSpaces = (lineSize - input2.substring(i,lineEnd).length())/spaceCount;
+                    if(spaceCount != 0)
+                        addedSpaces = (lineSize - input2.substring(i,lineEnd).length())/spaceCount;
+                    else
+                        addedSpaces = 0;
                     spaces = " ";
-                    for (int i = 0; i < addedSpaces; ++i)
+                    for (int k = 0; i < addedSpaces; ++i)
                         spaces = spaces + " ";
-                    line = input2.subString(i, lineEnd);
+                    line = input2.substring(i, lineEnd);
                     line.replaceAll(" ", spaces);
                     output = output + line;
+                    i = lineEnd;
 
                     output = output + "\n";
                     if (isSingleSpaced == false)
