@@ -43,6 +43,8 @@ public class Formatter {
             }
             ++i;
             ++j;
+            if (splitDoc[j-1].isEmpty())
+                --j;
         }  
         arraySize = j;
         for(i = 0; i < arraySize; ++i)
