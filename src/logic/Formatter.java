@@ -1,5 +1,7 @@
 package logic;
 
+import javax.lang.model.util.ElementScanner6;
+
 public class Formatter {
 
     private String input, output;
@@ -41,18 +43,12 @@ public class Formatter {
 
         for(i = 0; i < splitDoc.length; ++i)
         {
-            if(splitDoc[i].length() <= 5)
+
+            if(splitDoc[i].charAt(0) == '-')
             {
-                if(splitDoc[i].charAt(0) == '-')
-                {
-                    linecheck = splitDoc[i];
-                    Command check = new Command(linecheck);
-                    output = commandHandler(check, output);
-                }
-                else
-                {
-                    output = output + splitDoc[i];
-                }
+                linecheck = splitDoc[i];
+                Command check = new Command(linecheck);
+                output = commandHandler(check, output);
             }
             else
             {
@@ -64,9 +60,10 @@ public class Formatter {
 
     private String commandHandler(Command foundCommand, String input)
     {
-        String output = input
+        String output = input;
         Command check = foundCommand;
         switch (check.commandTypeToString()) {
+            // "TOGGLE" commands
             case "CHARACTER": // needs to be implemented
                 
                 break;
@@ -82,16 +79,31 @@ public class Formatter {
             case "EQUAL":
                 justType = Justified.Equal;
                 break;
-            case "WRAP": // needs to be implemented
+            case "WRAP":
+                if(check.validWrap())
+                {
+                    if (check.getParameter() == "+")
+                        wrap = true;
+                    else
+                        wrap = false;
+                }
+                else
+                {
+                    output = output + check.getCommand();
+                }
                 break;
-            case "COLUMN": // needs to be implemented
+            case "SINGLE":
+                isSingleSpaced = true;
                 break;
+            case "DOUBLE": 
+                isSingleSpaced = false;
+                break;
+            // "IMMEDIATE" commands
             case "TITLE":   // needs to be implemented
                 break;
             case "INDENT": // needs to be implemented
                 break;
             case "BLANK": // needs to be implemented
-                
                 break;
             case "COLUMN": // needs to be implemented
                 break;

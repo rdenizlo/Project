@@ -238,7 +238,9 @@ public class Command {
     public String commandTypeToString() {
         String toString = commandType.toString();
         return toString;
-
     }
 
+    public String getCommand() {
+        return command;
+    }
 }
