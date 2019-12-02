@@ -173,13 +173,18 @@ public class Formatter {
     }
 
     // Handles adding things to output with current formatting settings
+    // To Implement:
+    //      Two columns
+    //      Right justified
+    //      Equally spaced
+    //      Wrap
     private String formatHandler(String input1, String input2)
     {
         String output = input1;
         String thingToAdd = input2;
 
         // Handling special cases
-        if (isSingleColumn != false) // Two columns
+        if (isSingleColumn != false) // Two columns (not implemented)
         {
             int fit;
             int i = 0;
@@ -219,14 +224,14 @@ public class Formatter {
                 }
             }
         }
-        else if (justType == Justified.Equal) // Equally spaced
+        else if (justType == Justified.Equal) // Equally spaced (not implemented)
         {
             if (isSingleSpaced == false)
                 output = output + "\n";
         }
-        else if (justType == Justified.Right)
+        else if (justType == Justified.Right) // Right justified (not implemented)
         {
-            
+
         }
         else    // Left justified, single column
         {
