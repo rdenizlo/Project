@@ -50,7 +50,10 @@ public class Formatter {
             }
             else
             {
-                output = formatHandler(output, splitDoc[i]);
+                if(isSingleColumn)
+                    output = formatHandler(output, splitDoc[i]);
+                else
+                    output = doubleColumnHandler(output, splitDoc, i);
             }
         }
         return output;
@@ -123,7 +126,6 @@ public class Formatter {
                     else
                     {
                         isSingleColumn = false;
-                        lineSize = 80;
                     }
                 }
                 else
@@ -172,17 +174,10 @@ public class Formatter {
         return output;
     }
 
-    // Handles adding things to output with current formatting settings
-    // To Implement:
-    //      Two columns
-    //      Equally spaced (when fit < 0)
-    //      Wrap
-    private String formatHandler(String input1, String input2)
+    // Gave double columns its own method because of its need for unique
+    // parameters and its complexity
+    private String doubleColumnHandler(String output, String[] splitDoc, int index)
     {
-        String output = input1;
-        String thingToAdd = input2;
-
-        // Handling special cases
         /*
             How i'll need to implement two columns:
                 Parse the document and see if the format is ever changed 
@@ -193,22 +188,28 @@ public class Formatter {
                 chars from string one on the left and 35 chars from string two on the
                 right.
         */
-        if (isSingleColumn != false) // Two columns (not implemented)
+        int fit;
+        String leftString, rightString;
+        // We need to go through the document and check for -a1 commands
+        // If we find one we will use that line index.
+        for (int i = index; i < splitDoc.length; ++i)
         {
-            int fit;
-            int i = 0;
-            int j = 1;
-            String leftString, rightString;
-            while(fit < 0)
-            {
 
-            }
-            if (fit >= 0) // This is going to take some work
-            {
-
-            }
         }
-        else if (justType == Justified.Center) // Center justified
+        return output;
+    }
+
+    // Handles adding things to output with current formatting settings
+    // To Implement:
+    //      Equally spaced (when fit < 0 needs to be implemented)
+    //      Wrap
+    private String formatHandler(String input1, String input2)
+    {
+        String output = input1;
+        String thingToAdd = input2;
+
+        // Handling special cases
+        if (justType == Justified.Center) // Center justified
         {
             int margins = (lineSize - input2.length()) / 2;
             if (margins >= 0)
@@ -296,7 +297,7 @@ public class Formatter {
                 }
             }
         }
-        else    // Left justified, single column
+        else    // Left justified
         {
             int fit = (lineSize - input2.length());
             if (fit >= 0)
