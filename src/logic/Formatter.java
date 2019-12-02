@@ -27,8 +27,8 @@ public class Formatter {
         String output = "";
         int i = 0;
         int j = 0;
-        String[] splitDoc = new String[50];
-        while(i < input.length())
+        String[] splitDoc = new String[1000];
+        while(i < input.length() && j < 1000)
         {
             splitDoc[j] = "";
             while(input.charAt(i) != '\n' && i < input.length())
@@ -201,21 +201,26 @@ public class Formatter {
             int j = 1;
             while(margins < 0)
             {
-                output = output + input2.subString(i, lineSize*j);
+                output = output + input2.substring(i, lineSize*j);
                 i = lineSize * j;
-                margins = (lineSize - input2.subString(lineSize*j).length()) / 2;
+                margins = (lineSize - input2.substring(lineSize*j).length()) / 2;
                 ++j;
+                if (isSingleSpaced == false)
+                    output = output + "\n";
             }
             if (margins >= 0)
             {
-                for(int i = 0; i < margins; ++i)
+                for(i = 0; i < margins; ++i)
                     output = output + " ";
                 output = output + input2;
+                if (isSingleSpaced == false)
+                    output = output + "\n";
             }
         }
         else if (justType == Justified.Equal)
         {
-
+            if (isSingleSpaced == false)
+                output = output + "\n";
         }
         return output;
     }
