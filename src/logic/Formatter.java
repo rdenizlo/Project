@@ -188,14 +188,51 @@ public class Formatter {
                 chars from string one on the left and 35 chars from string two on the
                 right.
         */
-        int fit;
-        String leftString, rightString;
+        int fit, j;
+        String leftString = "";
+        String rightString = "";
+        String lineCheck;
+        boolean commandFound = false;
+        int i = index;
+        int a = 0;
+        int b = 34;
         // We need to go through the document and check for -a1 commands
         // If we find one we will use that line index.
-        for (int i = index; i < splitDoc.length; ++i)
+        while (i < splitDoc.length && commandFound == false)
         {
-
+            ++i;
+            if(splitDoc[i].charAt(0) == '-')
+            {
+                lineCheck = splitDoc[i];
+                Command check = new Command(lineCheck);
+                output = commandHandler(check, output, splitDoc[i+1]);
+                if (check.validColumns())
+                    if (check.getParameter().equals("1"))
+                        commandFound = true;
+            }
         }
+        int halfway = (i - index)/2;
+        // Handling leftString
+        for (j = 0; j < halfway; ++j)
+        {
+            leftString = leftString + splitDoc[j];
+        }
+        // Handling rightString
+        for (j = halfway; j < i; ++j)
+        {
+            rightString = rightString + splitDoc[j];
+        }
+        j = 0;
+        while (b < rightString.length())
+        {
+            output = output + leftString.substring(a, b) + "          "
+                + rightString.substring(a, b);
+            a = a + 35;
+            b = b + 35;
+            if (isSingleSpaced == false)
+                output = output + "\n";
+        }
+
         return output;
     }
 
