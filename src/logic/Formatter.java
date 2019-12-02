@@ -2,7 +2,7 @@ package logic;
 
 public class Formatter {
 
-    private String input;
+    private String input, output;
     private int lineSize;
     private boolean indent, wrap, isSingleSpaced, isSingleColumn;
     private enum Justified {
@@ -24,7 +24,11 @@ public class Formatter {
     public String getOutput(String preParsed) {
         input = preParsed;
         String linecheck;
+<<<<<<< HEAD
         String output = "";
+=======
+        output = "";
+>>>>>>> 768f9cd0f3dcf0087e1d0c68d9e4a4446fb09d12
         int i = 0;
         int j = 0;
         String[] splitDoc = new String[50];
@@ -47,7 +51,11 @@ public class Formatter {
                 {
                     linecheck = splitDoc[i];
                     Command check = new Command(linecheck);
+<<<<<<< HEAD
                     output = commandHandler(check, output);
+=======
+                    commandHandler(check);
+>>>>>>> 768f9cd0f3dcf0087e1d0c68d9e4a4446fb09d12
                 }
                 else
                 {
