@@ -42,7 +42,7 @@ public class Formatter {
 
         for(i = 0; i < splitDoc.length; ++i)
         {
-
+        	System.out.println("we got in here");
             if(splitDoc[i].charAt(0) == '-')
             {
                 linecheck = splitDoc[i];
@@ -238,7 +238,7 @@ public class Formatter {
     }
 
     // Handles adding things to output with current formatting settings
-    // To Implement:
+    // TODO:
     //      Equally spaced (when fit < 0 needs to be implemented)
     //      Wrap
     private String formatHandler(String input1, String input2)
@@ -294,7 +294,7 @@ public class Formatter {
                     output = output + "\n";
             }
             else    // needs to be implemented
-            {
+            { //TODO
                 int i;
                 int j;
                 while (fit < 0)
