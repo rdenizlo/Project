@@ -1,5 +1,7 @@
 package logic;
 
+import javax.lang.model.util.ElementScanner6;
+
 public class Command {
 
     private enum CommandType {
@@ -8,7 +10,8 @@ public class Command {
         LEFT,
         CENTER,
         EQUAL,
-        WRAP,
+        WRAP_PLUS,
+        WRAP_MINUS,
         SINGLE,
         DOUBLE,
         TITLE,
@@ -20,9 +23,11 @@ public class Command {
     private CommandType commandType;
     private String command, parameter;
     private String errorMessage;
+    private int secondArgument;
 
     public Command(String command) {
         this.command = command;
+        secondArgument = null;
         identifyCommand();
     }
 
@@ -65,6 +70,7 @@ public class Command {
             switch (second) {
                 case 'n':
                     commandType = CommandType.CHARACTER;
+                    
                     break;
                 case 'r':
                     commandType = CommandType.RIGHT;
@@ -79,7 +85,10 @@ public class Command {
                     commandType = CommandType.EQUAL;
                     break;
                 case 'w':
-                    commandType = CommandType.WRAP;
+                    if(command.charAt(3) == '+')
+                        commandType = CommandType.WRAP_PLUS;
+                    else
+                        commandType = CommandType.WRAP_MINUS;
                     break;
                 case 's':
                     commandType = CommandType.SINGLE;
@@ -92,6 +101,7 @@ public class Command {
                     break;
                 case 'p':
                     commandType = CommandType.INDENT;
+
                     break;
                 case 'b':
                     commandType = CommandType.BLANK;
