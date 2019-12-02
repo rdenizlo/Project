@@ -282,7 +282,7 @@ public class Formatter {
                         lineEnd = input2.length();
                     output = output + input2.substring(i, lineEnd);
                     i = lineEnd;
-                    output = output "\n";
+                    output = output + "\n";
                     if (isSingleSpaced == false)
                         output = output + "\n";
                 }
