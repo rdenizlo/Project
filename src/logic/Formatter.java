@@ -266,7 +266,7 @@ public class Formatter {
             {
                 int i = 0;
                 int j = 0;
-                while(margins < 0)
+                while(margins < 0) // change to be like left justified
                 {
                     margins = (lineSize - input2.substring(lineSize*j).length()) / 2;
                     ++j;
@@ -298,7 +298,7 @@ public class Formatter {
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
-            else    //TODO
+            else    //TODO 
             { 
                 int i;
                 int j;
@@ -326,14 +326,21 @@ public class Formatter {
             {
                 int i = 0;
                 int j = 0;
-                while (margin < 0)
+                int lineEnd;
+                while (margin < 0) 
                 {
-                    margin = lineSize - input2.substring(lineSize*j).length();
+                    lineEnd = lineSize*j;
+                    if (lineEnd > input2.length())
+                        lineEnd = input2.length();
+                    margin = lineSize - input2.substring(lineEnd).length();
                     ++j;
+                    lineEnd = lineSize*j;
+                    if (lineEnd > input2.length());
+                        lineEnd = input2.length();
                     for(int k = 0; k < margin; ++k)
                         output = output + " ";
-                    output = output + input2.substring(i, lineSize*j);
-                    i = lineSize*j;
+                    output = output + input2.substring(i, lineEnd);
+                    i = lineEnd;
                     if (isSingleSpaced == false)
                         output = output + "\n";
                 }
@@ -341,7 +348,6 @@ public class Formatter {
         }
         else    // Left justified
         {
-            System.out.println("This is where it should be getting.");
             int fit = (lineSize - input2.length());
             if (fit >= 0)
             {
@@ -356,7 +362,6 @@ public class Formatter {
                 int lineEnd;
                 while (fit < 0)
                 {
-                    System.out.println("We're in here. Fit = " + fit);
                     lineEnd = lineSize*j;
                     if (lineEnd > input2.length())
                         lineEnd = input2.length();
@@ -365,7 +370,6 @@ public class Formatter {
                     lineEnd = lineSize*j;
                     if (lineEnd > input2.length())
                         lineEnd = input2.length();
-                    System.out.println(input2.substring(i, lineEnd));
                     output = output + input2.substring(i, lineEnd);
                     i = lineEnd;
                     output = output + "\n";
