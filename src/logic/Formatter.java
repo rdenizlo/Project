@@ -66,48 +66,37 @@ public class Formatter {
     {
         String output = input
         Command check = foundCommand;
-        switch (check) {
-            case 'CommandType.CHARACTER': // needs to be implemented
+        switch (check.command) {
+            case CommandType.CHARACTER: // needs to be implemented
                 
                 break;
-            case 'CommandType.RIGHT':
+            case CommandType.RIGHT:
                 justType = Justified.Right;
                 break;
-            case 'CommandType.LEFT':
+            case CommandType.LEFT:
                 justType = Justified.Left;
                 break;
-            case 'CommandType.CENTER':
+            case CommandType.CENTER:
                 justType = Justified.Center;
                 break;
-            case 'CommandType.EQUAL':
+            case CommandType.EQUAL:
                 justType = Justified.Equal;
                 break;
-            case 'CommandType.WRAP_MINUS':
-                wrap = false;
+            case CommandType.WRAP: // needs to be implemented
                 break;
-            case 'CommandType.WRAP_PLUS':
-                wrap = true;
+            case CommandType.COLUMN: // needs to be implemented
                 break;
-            case 'CommandType.SINGLE':
-                isSingleSpaced = true;
+            case CommandType.TITLE:   // needs to be implemented
                 break;
-            case 'CommandType.DOUBLE':
-                isSingleSpaced = false;
+            case CommandType.INDENT: // needs to be implemented
                 break;
-            case 'CommandType.TITLE':   // needs to be implemented
-                break;
-            case 'CommandType.INDENT': // needs to be implemented
-                break;
-            case 'CommandType.BLANK': // needs to be implemented
+            case CommandType.BLANK: // needs to be implemented
                 
                 break;
-            case 'CommandType.SINGLE_COLUMN':
-                isSingleColumn = true;
-                break;
-            case 'CommandType.DOUBLE_COLUMN':
-                isSingleColumn = false;
+            case CommandType.COlUMN: // needs to be implemented
                 break;
             default:
-    }
+                break;
+        }
 }
 
