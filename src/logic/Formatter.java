@@ -172,7 +172,6 @@ public class Formatter {
         return output;
     }
 
-    // Needs to be implemented
     // Handles adding things to output with current formatting settings
     private String formatHandler(String input1, String input2)
     {
@@ -180,47 +179,77 @@ public class Formatter {
         String thingToAdd = input2;
 
         // Handling special cases
-        if (isSingleColumn != false)
+        if (isSingleColumn != false) // Two columns
         {
-            int margins = (lineSize - input2.length()) / 2;
+            int fit;
             int i = 0;
             int j = 1;
-            while(margins < 0)
+            while(fit < 0)
             {
 
             }
-            if (margins >= 0) // This is going to take some work
+            if (fit >= 0) // This is going to take some work
             {
 
             }
         }
-        else if (justType == Justified.Center)
+        else if (justType == Justified.Center) // Center justified
         {
             int margins = (lineSize - input2.length()) / 2;
-            int i = 0;
-            int j = 1;
-            while(margins < 0)
-            {
-                output = output + input2.substring(i, lineSize*j);
-                i = lineSize * j;
-                margins = (lineSize - input2.substring(lineSize*j).length()) / 2;
-                ++j;
-                if (isSingleSpaced == false)
-                    output = output + "\n";
-            }
             if (margins >= 0)
             {
-                for(i = 0; i < margins; ++i)
+                for(int i = 0; i < margins; ++i)
                     output = output + " ";
                 output = output + input2;
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
+            else
+            {
+                int i = 0;
+                int j = 0;
+                while(margins < 0)
+                {
+                    margins = (lineSize - input2.substring(lineSize*j).length()) / 2;
+                    ++j;
+                    output = output + input2.substring(i, lineSize*j);
+                    i = lineSize * j;
+                    if (isSingleSpaced == false)
+                        output = output + "\n";
+                }
+            }
         }
-        else if (justType == Justified.Equal)
+        else if (justType == Justified.Equal) // Equally spaced
         {
             if (isSingleSpaced == false)
                 output = output + "\n";
+        }
+        else if (justType == Justified.Right)
+        {
+            
+        }
+        else    // Left justified, single column
+        {
+            int fit = (lineSize - input2.length());
+            if (fit >= 0)
+            {
+                if (isSingleSpaced == false)
+                    output = output + "\n";
+            }
+            else
+            {
+                int i = 0;
+                int j = 0;
+                while (fit < 0)
+                {
+                    fit = lineSize - input2.substring(lineSize*j).length();
+                    ++j;
+                    output = output + input2.substring(i, lineSize*j);
+                    i = lineSize*j;
+                    if (isSingleSpaced == false)
+                        output = output + "\n";
+                } 
+            }
         }
         return output;
     }
