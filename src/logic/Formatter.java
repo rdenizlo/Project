@@ -66,34 +66,34 @@ public class Formatter {
     {
         String output = input
         Command check = foundCommand;
-        switch (check.command) {
-            case CommandType.CHARACTER: // needs to be implemented
+        switch (check.commandTypeToString()) {
+            case "CHARACTER": // needs to be implemented
                 
                 break;
-            case CommandType.RIGHT:
+            case "RIGHT":
                 justType = Justified.Right;
                 break;
-            case CommandType.LEFT:
+            case "LEFT":
                 justType = Justified.Left;
                 break;
-            case CommandType.CENTER:
+            case "CENTER":
                 justType = Justified.Center;
                 break;
-            case CommandType.EQUAL:
+            case "EQUAL":
                 justType = Justified.Equal;
                 break;
-            case CommandType.WRAP: // needs to be implemented
+            case "WRAP": // needs to be implemented
                 break;
-            case CommandType.COLUMN: // needs to be implemented
+            case "COLUMN": // needs to be implemented
                 break;
-            case CommandType.TITLE:   // needs to be implemented
+            case "TITLE":   // needs to be implemented
                 break;
-            case CommandType.INDENT: // needs to be implemented
+            case "INDENT": // needs to be implemented
                 break;
-            case CommandType.BLANK: // needs to be implemented
+            case "BLANK": // needs to be implemented
                 
                 break;
-            case CommandType.COlUMN: // needs to be implemented
+            case "COLUMN": // needs to be implemented
                 break;
             default:
                 break;
