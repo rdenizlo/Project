@@ -175,8 +175,7 @@ public class Formatter {
     // Handles adding things to output with current formatting settings
     // To Implement:
     //      Two columns
-    //      Right justified
-    //      Equally spaced
+    //      Equally spaced (when fit < 0)
     //      Wrap
     private String formatHandler(String input1, String input2)
     {
@@ -224,14 +223,43 @@ public class Formatter {
                 }
             }
         }
-        else if (justType == Justified.Equal) // Equally spaced (not implemented)
+        else if (justType == Justified.Equal) // Equally spaced
         {
-            if (isSingleSpaced == false)
-                output = output + "\n";
+            int fit = lineSize - input2.length();
+            int spaceCount;
+            if (fit >= 0)
+            {
+                spaceCount = 0;
+                for (int i = 0; i < input2.length(); ++i)
+                {
+                    if (input2.charAt(i) == ' ')
+                        ++spaceCount;
+                }
+                int addedSpaces = (lineSize - input2.length())/spaceCount;
+                String spaces = " ";
+                for (int i = 0; i < addedSpaces; ++i)
+                    spaces = spaces + " ";
+                input2.replaceAll(" ", spaces);
+                output = output + input2;
+                if (isSingleSpaced == false)
+                    output = output + "\n";
+            }
+            else    // needs to be implemented
+            {
+                int i;
+                int j;
+                while (fit < 0)
+                {
+                    spaceCount = 0;
+                    
+                    if (isSingleSpaced == false)
+                        output = output + "\n";
+                }
+            }
         }
-        else if (justType == Justified.Right) // Right justified (not implemented)
+        else if (justType == Justified.Right)   // Right justified
         {
-            int margin = lineSize - insput2.length());
+            int margin = lineSize - input2.length();
             if (margin >= 0)
             {
                 for(int i = 0; i < margin; ++i)
