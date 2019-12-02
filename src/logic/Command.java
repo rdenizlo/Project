@@ -17,7 +17,8 @@ public class Command {
         TITLE,
         INDENT,
         BLANK,
-        COLUMN
+        SINGLE_COLUMN,
+        DOUBLE_COLUMN
     }
 
     private CommandType commandType;
@@ -68,9 +69,8 @@ public class Command {
             setInvalidCommandErrorMessage();
         } else {
             switch (second) {
-                case 'n':
+                case 'n': // needs to be echanged
                     commandType = CommandType.CHARACTER;
-                    
                     break;
                 case 'r':
                     commandType = CommandType.RIGHT;
@@ -99,15 +99,20 @@ public class Command {
                 case 't':
                     commandType = CommandType.TITLE;
                     break;
-                case 'p':
+                case 'p': // needs to be changed
                     commandType = CommandType.INDENT;
 
                     break;
-                case 'b':
+                case 'b': // needs to be changed
                     commandType = CommandType.BLANK;
                     break;
-                case 'a':
-                    commandType = CommandType.COLUMN;
+                case 'a': 
+                    if (command.charAt(3) == '1')
+                        commandType = CommandType.SINGLE_COLUMN;
+                    else if (command.charAt(3) == '2')
+                        commandType = CommandType.DOUBLE_COLUMN;
+                    else // default
+                        commandType = CommandType.SINGLE_COLUMN;
                     break;
                 default:
                     setUnsupportedCommandErrorMessage();

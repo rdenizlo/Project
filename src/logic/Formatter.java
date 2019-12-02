@@ -41,7 +41,7 @@ public class Formatter {
 
         for(i = 0; i < splitDoc.length; ++i)
         {
-            if(splitDoc[i].length() <= 3)
+            if(splitDoc[i].length() <= 5)
             {
                 if(splitDoc[i].charAt(0) == '-')
                 {
@@ -100,7 +100,11 @@ public class Formatter {
             case 'CommandType.BLANK':
                 
                 break;
-            case 'CommandType.COLUMN':
+            case 'CommandType.SINGLE_COLUMN':
+                isSingleColumn = true;
+                break;
+            case 'CommandType.DOUBLE_COLUMN':
+                isSingleColumn = false;
                 break;
             default:
     }
