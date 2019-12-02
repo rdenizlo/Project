@@ -47,7 +47,7 @@ public class Formatter {
             {
                 linecheck = splitDoc[i];
                 Command check = new Command(linecheck);
-                output = commandHandler(check, output);
+                output = commandHandler(check, output, splitDoc[i+1]);
             }
             else
             {
@@ -57,7 +57,7 @@ public class Formatter {
         return output;
     }
 
-    private String commandHandler(Command foundCommand, String input)
+    private String commandHandler(Command foundCommand, String input, String next)
     {
         String output = input;
         Command check = foundCommand;
@@ -128,29 +128,38 @@ public class Formatter {
                     output = formatHandler(output, check.getCommand());
                 break;
 
-            // "IMMEDIATE" COMMANDS
-            case "TITLE":   // needs to be implemented
-                if(check.validTitle())
+            // "IMMEDIATE" COMMANDS //
+            case "TITLE":   
+                if(check.validTitle()) 
                 {
-
+                    int margins = (lineSize - next.length()) / 2;
+                    if (margins < 0)
+                        margins = 0;
+                    output = output + margins + next + "\n";
+                    for(int i = 0; i < lineSize; ++i)
+                        output = output + "-";
                 }
                 else
                 {
                     output = formatHandler(output, check.getCommand());
                 }
                 break;
-            case "INDENT": // needs to be implemented
-                if(check.validIndents())
+            case "INDENT": 
+                if(check.validIndents() && justType == Justified.Left)
                 {
-
+                    int spaces = Integer.parseInt(check.getParameter());
+                    for(int i = 0; i < spaces; ++i)
+                        output = output + " ";
                 }
                 else
                     output = formatHandler(output, check.getCommand());
                 break;
-            case "BLANK": // needs to be implemented
+            case "BLANK": 
                 if(check.validBlankLines())
                 {
-
+                    int blankLines = Integer.parseInt(check.getParameter());
+                    for(int i = 0; i < blankLines; ++i)
+                        output = output + "/n";
                 }
                 else
                     output = formatHandler(output, check.getCommand());
@@ -161,6 +170,7 @@ public class Formatter {
         return output;
     }
 
+    // Needs to be implemented
     // Handles adding things to output with current formatting settings
     private String formatHandler(String input1, String input2)
     {
