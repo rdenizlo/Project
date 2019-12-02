@@ -183,11 +183,22 @@ public class Formatter {
         String thingToAdd = input2;
 
         // Handling special cases
+        /*
+            How i'll need to implement two columns:
+                Parse the document and see if the format is ever changed 
+                back to single column. Then calculate the halfway point.
+                Put the chunk between when double column was implemented in one string
+                Put the chunk between halfway and when single column was implemented/
+                when the document ends in another string. Create output by putting 35
+                chars from string one on the left and 35 chars from string two on the
+                right.
+        */
         if (isSingleColumn != false) // Two columns (not implemented)
         {
             int fit;
             int i = 0;
             int j = 1;
+            String leftString, rightString;
             while(fit < 0)
             {
 
