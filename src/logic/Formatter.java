@@ -267,12 +267,22 @@ public class Formatter {
             {
                 int i = 0;
                 int j = 0;
-                while(margins < 0) // change to be like left justified
+                int fit = margins;
+                int lineEnd;
+                while(fit < 0) 
                 {
-                    margins = (lineSize - input2.substring(lineSize*j).length()) / 2;
+                    lineEnd = lineSize*j;
+                    if (lineEnd > input2.length())
+                        lineEnd = input2.length();
+                    fit = lineSize - input2.substring(lineEnd).length();
+                    margins = (lineSize - input2.substring(lineEnd).length()) / 2;
                     ++j;
-                    output = output + input2.substring(i, lineSize*j);
-                    i = lineSize * j;
+                    lineEnd = lineSize*j;
+                    if (lineEnd > input2.length())
+                        lineEnd = input2.length();
+                    output = output + input2.substring(i, lineEnd);
+                    i = lineEnd;
+                    output = output "\n";
                     if (isSingleSpaced == false)
                         output = output + "\n";
                 }
