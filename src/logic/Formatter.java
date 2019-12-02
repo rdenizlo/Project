@@ -231,13 +231,38 @@ public class Formatter {
         }
         else if (justType == Justified.Right) // Right justified (not implemented)
         {
-
+            int margin = lineSize - insput2.length());
+            if (margin >= 0)
+            {
+                for(int i = 0; i < margin; ++i)
+                    output = output + " ";
+                output = output + input2;
+                if (isSingleSpaced == false)
+                    output = output + "\n";
+            }
+            else
+            {
+                int i = 0;
+                int j = 0;
+                while (margin < 0)
+                {
+                    margin = lineSize - input2.substring(lineSize*j).length();
+                    ++j;
+                    for(int k = 0; k < margin; ++k)
+                        output = output + " ";
+                    output = output + input2.substring(i, lineSize*j);
+                    i = lineSize*j;
+                    if (isSingleSpaced == false)
+                        output = output + "\n";
+                }
+            }
         }
         else    // Left justified, single column
         {
             int fit = (lineSize - input2.length());
             if (fit >= 0)
             {
+                output = output + input2;
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
