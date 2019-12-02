@@ -327,20 +327,26 @@ public class Formatter {
                 int i = 0;
                 int j = 0;
                 int lineEnd;
-                while (margin < 0) 
+                int fit = margin;
+                while (fit < 0) 
                 {
                     lineEnd = lineSize*j;
                     if (lineEnd > input2.length())
                         lineEnd = input2.length();
-                    margin = lineSize - input2.substring(lineEnd).length();
+                    fit = lineSize - input2.substring(lineEnd).length();
                     ++j;
                     lineEnd = lineSize*j;
-                    if (lineEnd > input2.length());
+                    if (lineEnd > input2.length())
                         lineEnd = input2.length();
+
+                    margin = lineSize - input2.substring(i, lineEnd).length();
                     for(int k = 0; k < margin; ++k)
                         output = output + " ";
+                        
                     output = output + input2.substring(i, lineEnd);
                     i = lineEnd;
+
+                    output = output + "\n";
                     if (isSingleSpaced == false)
                         output = output + "\n";
                 }
