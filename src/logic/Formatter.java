@@ -260,6 +260,9 @@ public class Formatter {
                 for(int i = 0; i < margins; ++i)
                     output = output + " ";
                 output = output + input2;
+                for(int i = 0; i < margins; ++i)
+                    output = output + " ";
+                output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
@@ -280,7 +283,11 @@ public class Formatter {
                     lineEnd = lineSize*j;
                     if (lineEnd > input2.length())
                         lineEnd = input2.length();
+                    for (int k = 0; k < margins; ++k)
+                        output = output + " ";
                     output = output + input2.substring(i, lineEnd);
+                    for(int k = 0; k < margins; ++k)
+                        output = output + " ";
                     i = lineEnd;
                     output = output + "\n";
                     if (isSingleSpaced == false)
