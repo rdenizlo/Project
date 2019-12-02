@@ -21,9 +21,8 @@ public class Formatter {
         justType = Justified.Left;
     }
 
-
-    public String getOutput(String preParsed) {
-        input = preParsed;
+    public String getOutput(String unParsed) {
+        input = unParsed;
         String linecheck;
         String output = "";
         int i = 0;
@@ -62,7 +61,7 @@ public class Formatter {
         String output = input;
         Command check = foundCommand;
         switch (check.commandTypeToString()) {
-            // "TOGGLE" COMMANDS
+            // "TOGGLE" COMMANDS (affect all future lines) //
             case "CHARACTER": 
                 if(check.validCharactersPerLine())
                     lineSize = Integer.parseInt(check.getParameter());
@@ -122,13 +121,16 @@ public class Formatter {
                     if(check.getParameter().equals("1"))
                         isSingleColumn = true;
                     else
+                    {
                         isSingleColumn = false;
+                        lineSize = 80;
+                    }
                 }
                 else
                     output = formatHandler(output, check.getCommand());
                 break;
 
-            // "IMMEDIATE" COMMANDS //
+            // "IMMEDIATE" COMMANDS (affect only the next line) //
             case "TITLE":   
                 if(check.validTitle()) 
                 {
@@ -176,6 +178,35 @@ public class Formatter {
     {
         String output = input1;
         String thingToAdd = input2;
+
+        // Handling special cases
+        if (isSingleColumn != false)
+        {
+
+        }
+        else if (justType == Justified.Center)
+        {
+            int margins = (lineSize - input2.length()) / 2;
+            int i = 0;
+            int j = 1;
+            while(margins < 0)
+            {
+                output = output + input2.subString(i, lineSize*j);
+                i = lineSize * j;
+                margins = (lineSize - input2.subString(lineSize*j).length()) / 2;
+                ++j;
+            }
+            else
+            {
+                for(int i = 0; i < margins; ++i)
+                    output = output + " ";
+                output = output + input2;
+            }
+        }
+        else if (justType == Justified.Equal)
+        {
+
+        }
         return output;
     }
 }
