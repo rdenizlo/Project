@@ -11,7 +11,6 @@ public class Formatter {
         Left, Right, Center, Equal;
     }
     private Justified justType;
-    private String output;
 
     public Formatter() {
         input = "No Input Exists";
@@ -52,7 +51,7 @@ public class Formatter {
             }
             else
             {
-                output = output + splitDoc[i];
+                output = formatHandler(output, splitDoc[i]);
             }
         }
         return output;
@@ -63,21 +62,36 @@ public class Formatter {
         String output = input;
         Command check = foundCommand;
         switch (check.commandTypeToString()) {
-            // "TOGGLE" commands
-            case "CHARACTER": // needs to be implemented
-                
+            // "TOGGLE" COMMANDS
+            case "CHARACTER": 
+                if(check.validCharactersPerLine())
+                    lineSize = Integer.parseInt(check.getParameter());
+                else
+                    output = formatHandler(output, check.getCommand());
                 break;
             case "RIGHT":
-                justType = Justified.Right;
+                if (check.validRightJustify())
+                    justType = Justified.Right;
+                else
+                    output = formatHandler(output, check.getCommand());
                 break;
             case "LEFT":
-                justType = Justified.Left;
+                if (check.validLeftJustify())
+                    justType = Justified.Left;
+                else
+                    output = formatHandler(output, check.getCommand());
                 break;
             case "CENTER":
-                justType = Justified.Center;
+                if (check.validCenter())
+                    justType = Justified.Center;
+                else
+                    output = formatHandler(output, check.getCommand());
                 break;
             case "EQUAL":
-                justType = Justified.Equal;
+                if (check.validEqualSpace())
+                    justType = Justified.Equal;
+                else
+                    output = formatHandler(output, check.getCommand());
                 break;
             case "WRAP":
                 if(check.validWrap())
@@ -88,27 +102,72 @@ public class Formatter {
                         wrap = false;
                 }
                 else
-                {
-                    output = output + check.getCommand();
-                }
+                    output = formatHandler(output, check.getCommand());
                 break;
             case "SINGLE":
-                isSingleSpaced = true;
+                if(check.validSingleSpace())
+                    isSingleSpaced = true;
+                else
+                    output = formatHandler(output, check.getCommand());
                 break;
             case "DOUBLE": 
-                isSingleSpaced = false;
+                if(check.validDoubleSpace())
+                    isSingleSpaced = false;
+                else
+                    output = formatHandler(output, check.getCommand());
                 break;
-            // "IMMEDIATE" commands
+            case "COLUMN":
+                if(check.validColumns())
+                {
+                    if(check.getParameter().equals("1"))
+                        isSingleColumn = true;
+                    else
+                        isSingleColumn = false;
+                }
+                else
+                    output = formatHandler(output, check.getCommand());
+                break;
+
+            // "IMMEDIATE" COMMANDS
             case "TITLE":   // needs to be implemented
+                if(check.validTitle())
+                {
+
+                }
+                else
+                {
+                    output = formatHandler(output, check.getCommand());
+                }
                 break;
             case "INDENT": // needs to be implemented
+                if(check.validIndents())
+                {
+
+                }
+                else
+                    output = formatHandler(output, check.getCommand());
                 break;
             case "BLANK": // needs to be implemented
-                break;
-            case "COLUMN": // needs to be implemented
+                if(check.validBlankLines())
+                {
+
+                }
+                else
+                    output = formatHandler(output, check.getCommand());
                 break;
             default:
                 break;
         }
+        return output;
+    }
+
+    // Handles adding things to output with current formatting settings
+    private String formatHandler(String input1, String input2)
+    {
+        String output = input1;
+        String thingToAdd = input2;
+        return output;
+    }
 }
+
 
