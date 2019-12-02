@@ -4,9 +4,9 @@ import javax.lang.model.util.ElementScanner6;
 
 public class Formatter {
 
-    private String input, output;
+    private String input;
     private int lineSize;
-    private boolean indent, wrap, isSingleSpaced, isSingleColumn;
+    private boolean wrap, isSingleSpaced, isSingleColumn;
     private enum Justified {
         Left, Right, Center, Equal;
     }
