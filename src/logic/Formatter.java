@@ -1,6 +1,7 @@
 package logic;
 
-import javax.lang.model.util.ElementScanner6;
+// Currently not being used
+//import javax.lang.model.util.ElementScanner6;
 
 public class Formatter {
 
@@ -179,7 +180,7 @@ public class Formatter {
     private String doubleColumnHandler(String output, String[] splitDoc, int index)
     {
         /*
-            How i'll need to implement two columns:
+            Basic runthrough of implementation of double columns:
                 Parse the document and see if the format is ever changed 
                 back to single column. Then calculate the halfway point.
                 Put the chunk between when double column was implemented in one string
@@ -188,7 +189,6 @@ public class Formatter {
                 chars from string one on the left and 35 chars from string two on the
                 right.
         */
-        int fit, j;
         String leftString = "";
         String rightString = "";
         String lineCheck;
@@ -196,6 +196,7 @@ public class Formatter {
         int i = index;
         int a = 0;
         int b = 34;
+        int j;
         // We need to go through the document and check for -a1 commands
         // If we find one we will use that line index.
         while (i < splitDoc.length && commandFound == false)
@@ -232,7 +233,7 @@ public class Formatter {
             if (isSingleSpaced == false)
                 output = output + "\n";
         }
-
+        isSingleColumn = true;
         return output;
     }
 
@@ -243,7 +244,6 @@ public class Formatter {
     private String formatHandler(String input1, String input2)
     {
         String output = input1;
-        String thingToAdd = input2;
 
         // Handling special cases
         if (justType == Justified.Center) // Center justified
