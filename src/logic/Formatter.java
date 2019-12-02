@@ -1,5 +1,8 @@
 package logic;
 
+import javax.lang.model.util.ElementScanner6;
+import java.lang.String;
+
 // Currently not being used
 //import javax.lang.model.util.ElementScanner6;
 
@@ -23,7 +26,6 @@ public class Formatter {
     }
 
     public String getOutput(String unParsed) {
-        System.out.println("Test getOutput");
         input = unParsed;
         String linecheck;
         String output = "";
@@ -56,16 +58,14 @@ public class Formatter {
                 if(isSingleColumn)
                     output = formatHandler(output, splitDoc[i]);
                 else
-                    output = doubleColumnHandler(output, splitDoc, i);
+                    output = doubleColumnHandler(output, splitDoc, i, arraySize);
             }
         }
-        System.out.println("End of getOutput");
         return output;
     }
 
     private String commandHandler(Command foundCommand, String input, String next)
     {
-        System.out.println("Test commandHandler");
         String output = input;
         Command check = foundCommand;
         switch (check.commandTypeToString()) {
@@ -181,8 +181,9 @@ public class Formatter {
 
     // Gave double columns its own method because of its need for unique
     // parameters and its complexity
-    private String doubleColumnHandler(String output, String[] splitDoc, int index)
+    private String doubleColumnHandler(String output, String[] doc, int index, int arraySize)
     {
+        System.out.println("We're in doubleColumnHandler");
         /*
             Basic runthrough of implementation of double columns:
                 Parse the document and see if the format is ever changed 
@@ -196,6 +197,7 @@ public class Formatter {
         String leftString = "";
         String rightString = "";
         String lineCheck;
+
         boolean commandFound = false;
         int i = index;
         int a = 0;
@@ -203,32 +205,32 @@ public class Formatter {
         int j;
         // We need to go through the document and check for -a1 commands
         // If we find one we will use that line index.
-        while (i < splitDoc.length && commandFound == false)
+        while (i < arraySize && commandFound == false)
         {
-            ++i;
-            if(splitDoc[i].charAt(0) == '-')
+            if(doc[i].charAt(0) == '-')
             {
-                lineCheck = splitDoc[i];
+                lineCheck = doc[i];
                 Command check = new Command(lineCheck);
-                output = commandHandler(check, output, splitDoc[i+1]);
+                output = commandHandler(check, output, doc[i+1]);
                 if (check.validColumns())
                     if (check.getParameter().equals("1"))
                         commandFound = true;
             }
+            ++i;
         }
         int halfway = (i - index)/2;
         // Handling leftString
         for (j = 0; j < halfway; ++j)
         {
-            leftString = leftString + splitDoc[j];
+            leftString = leftString + doc[j];
         }
         // Handling rightString
         for (j = halfway; j < i; ++j)
         {
-            rightString = rightString + splitDoc[j];
+            rightString = rightString + doc[j];
         }
         j = 0;
-        while (b < rightString.length())
+        while (b < rightString.length() && b < leftString.length())
         {
             output = output + leftString.substring(a, b) + "          "
                 + rightString.substring(a, b);
@@ -247,7 +249,6 @@ public class Formatter {
     //      Wrap
     private String formatHandler(String input1, String input2)
     {
-        System.out.println("testformatHandler");
         String output = input1;
 
         // Handling special cases
@@ -281,6 +282,7 @@ public class Formatter {
         {
             int fit = lineSize - input2.length();
             int spaceCount;
+            int addedSpaces;
             if (fit >= 0)
             {
                 spaceCount = 0;
@@ -289,12 +291,16 @@ public class Formatter {
                     if (input2.charAt(i) == ' ')
                         ++spaceCount;
                 }
-                int addedSpaces = (lineSize - input2.length())/spaceCount;
+                if(spaceCount != 0)
+                    addedSpaces = (lineSize - input2.length())/spaceCount;
+                else
+                    addedSpaces = 0;
                 String spaces = " ";
                 for (int i = 0; i < addedSpaces; ++i)
                     spaces = spaces + " ";
-                input2.replaceAll(" ", spaces);
-                output = output + input2;
+                String line = input2;
+                line.replaceAll("\\s", spaces);
+                output = output + line;
                 output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
@@ -304,7 +310,6 @@ public class Formatter {
                 int i = 0;
                 int j = 0;
                 int lineEnd;
-                int addedSpaces;
                 String line;
                 String spaces;
                 while (fit < 0)
@@ -327,7 +332,7 @@ public class Formatter {
                     for (int k = 0; i < addedSpaces; ++i)
                         spaces = spaces + " ";
                     line = input2.substring(i, lineEnd);
-                    line.replaceAll(" ", spaces);
+                    line.replaceAll("\\s", spaces);
                     output = output + line;
                     i = lineEnd;
 
