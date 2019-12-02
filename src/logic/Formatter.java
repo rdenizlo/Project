@@ -182,7 +182,17 @@ public class Formatter {
         // Handling special cases
         if (isSingleColumn != false)
         {
+            int margins = (lineSize - input2.length()) / 2;
+            int i = 0;
+            int j = 1;
+            while(margins < 0)
+            {
 
+            }
+            if (margins >= 0) // This is going to take some work
+            {
+
+            }
         }
         else if (justType == Justified.Center)
         {
@@ -196,7 +206,7 @@ public class Formatter {
                 margins = (lineSize - input2.subString(lineSize*j).length()) / 2;
                 ++j;
             }
-            else
+            if (margins >= 0)
             {
                 for(int i = 0; i < margins; ++i)
                     output = output + " ";
