@@ -23,24 +23,27 @@ public class Formatter {
     }
 
     public String getOutput(String unParsed) {
+        System.out.println("Test getOutput");
         input = unParsed;
         String linecheck;
         String output = "";
         int i = 0;
         int j = 0;
+        int arraySize;
         String[] splitDoc = new String[1000];
         while(i < input.length() && j < 1000)
         {
             splitDoc[j] = "";
-            while(input.charAt(i) != '\n' && i < input.length())
+            while(i < input.length() && input.charAt(i) != '\n')
             {
                 splitDoc[j] = splitDoc[j] + input.charAt(i);
                 ++i;
             }
+            ++i;
             ++j;
         }  
-
-        for(i = 0; i < splitDoc.length; ++i)
+        arraySize = j;
+        for(i = 0; i < arraySize; ++i)
         {
             if(splitDoc[i].charAt(0) == '-')
             {
@@ -56,11 +59,13 @@ public class Formatter {
                     output = doubleColumnHandler(output, splitDoc, i);
             }
         }
+        System.out.println("End of getOutput");
         return output;
     }
 
     private String commandHandler(Command foundCommand, String input, String next)
     {
+        System.out.println("Test commandHandler");
         String output = input;
         Command check = foundCommand;
         switch (check.commandTypeToString()) {
@@ -242,6 +247,7 @@ public class Formatter {
     //      Wrap
     private String formatHandler(String input1, String input2)
     {
+        System.out.println("testformatHandler");
         String output = input1;
 
         // Handling special cases
@@ -292,8 +298,8 @@ public class Formatter {
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
-            else    // needs to be implemented
-            { //TODO
+            else    //TODO
+            { 
                 int i;
                 int j;
                 while (fit < 0)
@@ -335,6 +341,7 @@ public class Formatter {
         }
         else    // Left justified
         {
+            System.out.println("This is where it should be getting.");
             int fit = (lineSize - input2.length());
             if (fit >= 0)
             {
@@ -346,12 +353,22 @@ public class Formatter {
             {
                 int i = 0;
                 int j = 0;
+                int lineEnd;
                 while (fit < 0)
                 {
-                    fit = lineSize - input2.substring(lineSize*j).length();
+                    System.out.println("We're in here. Fit = " + fit);
+                    lineEnd = lineSize*j;
+                    if (lineEnd > input2.length())
+                        lineEnd = input2.length();
+                    fit = lineSize - input2.substring(lineEnd).length();
                     ++j;
-                    output = output + input2.substring(i, lineSize*j);
-                    i = lineSize*j;
+                    lineEnd = lineSize*j;
+                    if (lineEnd > input2.length())
+                        lineEnd = input2.length();
+                    System.out.println(input2.substring(i, lineEnd));
+                    output = output + input2.substring(i, lineEnd);
+                    i = lineEnd;
+                    output = output + "\n";
                     if (isSingleSpaced == false)
                         output = output + "\n";
                 } 
