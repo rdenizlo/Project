@@ -235,5 +235,12 @@ public class Command {
         return errorMessage;
     }
 
+    public String commandTypeToString() {
+        String toString = commandType.toString();
+        return toString;
+    }
 
+    public String getCommand() {
+        return command;
+    }
 }

@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.text.NumberFormat;
+import logic.Formatter;
 
 public class TextPanel extends JPanel {
     //creates variables
@@ -21,6 +22,7 @@ public class TextPanel extends JPanel {
     private JFileChooser fc;
     private JScrollPane jsp1;
     private JScrollPane jsp2;
+    private Formatter formatter;
 
     NumberFormat fmt = NumberFormat.getCurrencyInstance();
 
@@ -103,7 +105,9 @@ public class TextPanel extends JPanel {
             } else if (event.getSource() == format) {
 
                 String str = Input.getText();
-                Output.setText(str);
+                formatter = new Formatter();
+                Output.setText(formatter.getOutput(str));
+                formatter = null;
 
             }
 
