@@ -38,6 +38,7 @@ public class TextPanel extends JPanel {
         clear = new JButton("Clear");
         format = new JButton("Format");
         JFileChooser fc = new JFileChooser();
+        formatter = new Formatter();
         Output.setEditable(false);
 
         //adds labels and text fields

@@ -42,7 +42,6 @@ public class Formatter {
 
         for(i = 0; i < splitDoc.length; ++i)
         {
-        	System.out.println("we got in here");
             if(splitDoc[i].charAt(0) == '-')
             {
                 linecheck = splitDoc[i];
