@@ -1,0 +1,8 @@
+Hello World
+-p5
+Cool stuff
+-n20
+Why did the chicken cross the road? It was hungry.
+-a2
+-d
+What will happen to this sentence if two columns are applied and doubly spaced?
