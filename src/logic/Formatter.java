@@ -289,7 +289,7 @@ public class Formatter {
 
     // Handles adding things to output with current formatting settings
     // TODO:
-    //      Equally spaced (.replaceAll not working)
+    //      Equally spaced 
     //      Wrap
     private String formatHandler(String input1, String input2)
     {
@@ -339,34 +339,35 @@ public class Formatter {
         }
         else if (justType == Justified.Equal) // Equally spaced
         {
-            int fit = lineSize - input2.length();
-            int spaceCount;
+            int i;
             int addedSpaces;
             String[] split;
+            split = input2.split("\\s+");
+            input2 = input2.replaceAll("\\s", "");
+            int fit = lineSize - input2.length();
             if (fit >= 0)
             {
-                split = input2.split("\\s+");
-                input2 = input2.replaceAll("\\s", "");
                 if (split.length != 0)
-                    addedSpaces = (lineSize - input2.length())/split.length;
+                    addedSpaces = (lineSize - input2.length())/(split.length-1);
                 else
                     addedSpaces = 0;
+                for(i = 0; i < split.length-1; ++i)
+                {
+                    output = output + split[i];
+                    for(int j = 0; j < addedSpaces; ++j)
+                    {
+                        output = output + " ";
+                    }
+                }
+                output = output + split[i];
 
-                /*
-                String spaces = " ";
-                for (int i = 0; i < addedSpaces; ++i)
-                    spaces = spaces + " ";
-                String line = input2;
-                line.replaceAll("\\s", spaces);
-                output = output + line;
                 output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
-            }*/
-            else    //TODO: fix .replaceAll (currently not working) 
-            /*
+            }
+            /*else    //TODO: fix .replaceAll (currently not working) 
+            
             { 
-                int i = 0;
                 int j = 0;
                 int lineEnd;
                 String line;
@@ -394,13 +395,14 @@ public class Formatter {
                     line.replaceAll("\\s", spaces);
                     output = output + line;
                     i = lineEnd;
-                    */
+                    
 
                     output = output + "\n";
                     if (isSingleSpaced == false)
                         output = output + "\n";
                 }
             }
+            */
         }
         else if (justType == Justified.Right)   // Right justified
         {
