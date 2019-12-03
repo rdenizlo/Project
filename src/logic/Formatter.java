@@ -175,7 +175,8 @@ public class Formatter {
                     if (margins < 0)
                         margins = 0;
                     output = output + margins + next + "\n";
-                    for(int i = 0; i < lineSize; ++i)
+                    output = output + margins;
+                    for(int i = 0; i < next.length(); ++i)
                         output = output + "-";
                 }
                 else
@@ -298,8 +299,6 @@ public class Formatter {
                 for(int i = 0; i < margins; ++i)
                     output = output + " ";
                 output = output + input2;
-                for(int i = 0; i < margins; ++i)
-                    output = output + " ";
                 output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
