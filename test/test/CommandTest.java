@@ -165,4 +165,14 @@ public class CommandTest {
         Assertions.assertEquals(false, result);
     }
 
+    @Test
+    public void testInvalidBlank(){
+        Command command = new Command("-b");
+        boolean result = command.validBlankLines();
+        System.out.println(command.getErrorMessage());
+        String parameter = command.getParameter();
+        Assertions.assertEquals(false, result);
+        Assertions.assertEquals(null, parameter);
+    }
+
 }
