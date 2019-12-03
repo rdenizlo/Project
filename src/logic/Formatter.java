@@ -55,6 +55,8 @@ public class Formatter {
                 linecheck = splitDoc[i];
                 Command check = new Command(linecheck);
                 output = commandHandler(check, output, splitDoc[i+1]);
+                if(check.commandTypeToString().equals("TITLE"))
+                    i++;
             }
             else
             {
@@ -174,8 +176,11 @@ public class Formatter {
                     int margins = (lineSize - next.length()) / 2;
                     if (margins < 0)
                         margins = 0;
-                    output = output + margins + next + "\n";
-                    output = output + margins;
+                    for(int i = 0; i < margins; ++i)
+                        output = output + " ";
+                    output = output + next + "\n";
+                    for(int i = 0; i < margins; ++i)
+                        output = output + " ";
                     for(int i = 0; i < next.length(); ++i)
                         output = output + "-";
                 }
