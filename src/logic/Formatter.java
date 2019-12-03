@@ -208,7 +208,7 @@ public class Formatter {
                 {
                     int blankLines = Integer.parseInt(check.getParameter());
                     for(int i = 0; i < blankLines; ++i)
-                        output = output + "/n";
+                        output = output + "\n";
                 }
                 else
                 {
@@ -342,18 +342,17 @@ public class Formatter {
             int fit = lineSize - input2.length();
             int spaceCount;
             int addedSpaces;
+            String[] split;
             if (fit >= 0)
             {
-                spaceCount = 0;
-                for (int i = 0; i < input2.length(); ++i)
-                {
-                    if (input2.charAt(i) == ' ')
-                        ++spaceCount;
-                }
-                if(spaceCount != 0)
-                    addedSpaces = (lineSize - input2.length())/spaceCount;
+                split = input2.split("\\s+");
+                input2 = input2.replaceAll("\\s", "");
+                if (split.length != 0)
+                    addedSpaces = (lineSize - input2.length())/split.length;
                 else
                     addedSpaces = 0;
+
+                /*
                 String spaces = " ";
                 for (int i = 0; i < addedSpaces; ++i)
                     spaces = spaces + " ";
@@ -363,8 +362,9 @@ public class Formatter {
                 output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
-            }
+            }*/
             else    //TODO: fix .replaceAll (currently not working) 
+            /*
             { 
                 int i = 0;
                 int j = 0;
@@ -394,6 +394,7 @@ public class Formatter {
                     line.replaceAll("\\s", spaces);
                     output = output + line;
                     i = lineEnd;
+                    */
 
                     output = output + "\n";
                     if (isSingleSpaced == false)
