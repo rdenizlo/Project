@@ -1,11 +1,14 @@
 package logic;
 
+import javax.lang.model.util.ElementScanner6;
+import java.lang.String;
+
 // Currently not being used
 //import javax.lang.model.util.ElementScanner6;
 
 public class Formatter {
 
-    private String input;
+    private String input, errors;
     private int lineSize;
     private boolean wrap, isSingleSpaced, isSingleColumn;
     private enum Justified {
@@ -15,6 +18,7 @@ public class Formatter {
 
     public Formatter() {
         input = "No Input Exists";
+        errors = "";
         lineSize = 80;
         wrap = false;
         isSingleSpaced = true;
@@ -23,7 +27,6 @@ public class Formatter {
     }
 
     public String getOutput(String unParsed) {
-        System.out.println("Test getOutput");
         input = unParsed;
         String linecheck;
         String output = "";
@@ -41,6 +44,8 @@ public class Formatter {
             }
             ++i;
             ++j;
+            if (splitDoc[j-1].isEmpty())
+                --j;
         }  
         arraySize = j;
         for(i = 0; i < arraySize; ++i)
@@ -50,22 +55,22 @@ public class Formatter {
                 linecheck = splitDoc[i];
                 Command check = new Command(linecheck);
                 output = commandHandler(check, output, splitDoc[i+1]);
+                if(check.commandTypeToString().equals("TITLE"))
+                    i++;
             }
             else
             {
                 if(isSingleColumn)
                     output = formatHandler(output, splitDoc[i]);
                 else
-                    output = doubleColumnHandler(output, splitDoc, i);
+                    output = doubleColumnHandler(output, splitDoc, i, arraySize);
             }
         }
-        System.out.println("End of getOutput");
         return output;
     }
 
     private String commandHandler(Command foundCommand, String input, String next)
     {
-        System.out.println("Test commandHandler");
         String output = input;
         Command check = foundCommand;
         switch (check.commandTypeToString()) {
@@ -74,31 +79,46 @@ public class Formatter {
                 if(check.validCharactersPerLine())
                     lineSize = Integer.parseInt(check.getParameter());
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "RIGHT":
                 if (check.validRightJustify())
                     justType = Justified.Right;
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "LEFT":
                 if (check.validLeftJustify())
                     justType = Justified.Left;
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "CENTER":
                 if (check.validCenter())
                     justType = Justified.Center;
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "EQUAL":
                 if (check.validEqualSpace())
                     justType = Justified.Equal;
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "WRAP":
                 if(check.validWrap())
@@ -109,19 +129,28 @@ public class Formatter {
                         wrap = false;
                 }
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "SINGLE":
                 if(check.validSingleSpace())
                     isSingleSpaced = true;
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "DOUBLE": 
                 if(check.validDoubleSpace())
                     isSingleSpaced = false;
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "COLUMN":
                 if(check.validColumns())
@@ -134,7 +163,10 @@ public class Formatter {
                     }
                 }
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
 
             // "IMMEDIATE" COMMANDS (affect only the next line) //
@@ -144,13 +176,18 @@ public class Formatter {
                     int margins = (lineSize - next.length()) / 2;
                     if (margins < 0)
                         margins = 0;
-                    output = output + margins + next + "\n";
-                    for(int i = 0; i < lineSize; ++i)
+                    for(int i = 0; i < margins; ++i)
+                        output = output + " ";
+                    output = output + next + "\n";
+                    for(int i = 0; i < margins; ++i)
+                        output = output + " ";
+                    for(int i = 0; i < next.length(); ++i)
                         output = output + "-";
                 }
                 else
                 {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
                 }
                 break;
             case "INDENT": 
@@ -161,19 +198,26 @@ public class Formatter {
                         output = output + " ";
                 }
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }    
                 break;
             case "BLANK": 
                 if(check.validBlankLines())
                 {
                     int blankLines = Integer.parseInt(check.getParameter());
                     for(int i = 0; i < blankLines; ++i)
-                        output = output + "/n";
+                        output = output + "\n";
                 }
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             default:
+                errors = errors + check.getErrorMessage() + "\n";
                 break;
         }
         return output;
@@ -181,8 +225,9 @@ public class Formatter {
 
     // Gave double columns its own method because of its need for unique
     // parameters and its complexity
-    private String doubleColumnHandler(String output, String[] splitDoc, int index)
+    private String doubleColumnHandler(String output, String[] doc, int index, int arraySize)
     {
+        System.out.println("We're in doubleColumnHandler");
         /*
             Basic runthrough of implementation of double columns:
                 Parse the document and see if the format is ever changed 
@@ -196,6 +241,7 @@ public class Formatter {
         String leftString = "";
         String rightString = "";
         String lineCheck;
+
         boolean commandFound = false;
         int i = index;
         int a = 0;
@@ -203,32 +249,32 @@ public class Formatter {
         int j;
         // We need to go through the document and check for -a1 commands
         // If we find one we will use that line index.
-        while (i < splitDoc.length && commandFound == false)
+        while (i < arraySize && commandFound == false)
         {
-            ++i;
-            if(splitDoc[i].charAt(0) == '-')
+            if(doc[i].charAt(0) == '-')
             {
-                lineCheck = splitDoc[i];
+                lineCheck = doc[i];
                 Command check = new Command(lineCheck);
-                output = commandHandler(check, output, splitDoc[i+1]);
+                output = commandHandler(check, output, doc[i+1]);
                 if (check.validColumns())
                     if (check.getParameter().equals("1"))
                         commandFound = true;
             }
+            ++i;
         }
         int halfway = (i - index)/2;
         // Handling leftString
         for (j = 0; j < halfway; ++j)
         {
-            leftString = leftString + splitDoc[j];
+            leftString = leftString + doc[j];
         }
         // Handling rightString
         for (j = halfway; j < i; ++j)
         {
-            rightString = rightString + splitDoc[j];
+            rightString = rightString + doc[j];
         }
         j = 0;
-        while (b < rightString.length())
+        while (b < rightString.length() && b < leftString.length())
         {
             output = output + leftString.substring(a, b) + "          "
                 + rightString.substring(a, b);
@@ -243,11 +289,10 @@ public class Formatter {
 
     // Handles adding things to output with current formatting settings
     // TODO:
-    //      Equally spaced (when fit < 0 needs to be implemented)
+    //      Equally spaced 
     //      Wrap
     private String formatHandler(String input1, String input2)
     {
-        System.out.println("testformatHandler");
         String output = input1;
 
         // Handling special cases
@@ -259,6 +304,7 @@ public class Formatter {
                 for(int i = 0; i < margins; ++i)
                     output = output + " ";
                 output = output + input2;
+                output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
@@ -266,12 +312,26 @@ public class Formatter {
             {
                 int i = 0;
                 int j = 0;
-                while(margins < 0)
+                int fit = margins;
+                int lineEnd;
+                while(fit < 0) 
                 {
-                    margins = (lineSize - input2.substring(lineSize*j).length()) / 2;
+                    lineEnd = lineSize*j;
+                    if (lineEnd > input2.length())
+                        lineEnd = input2.length();
+                    fit = lineSize - input2.substring(lineEnd).length();
+                    margins = (lineSize - input2.substring(lineEnd).length()) / 2;
                     ++j;
-                    output = output + input2.substring(i, lineSize*j);
-                    i = lineSize * j;
+                    lineEnd = lineSize*j;
+                    if (lineEnd > input2.length())
+                        lineEnd = input2.length();
+                    for (int k = 0; k < margins; ++k)
+                        output = output + " ";
+                    output = output + input2.substring(i, lineEnd);
+                    for(int k = 0; k < margins; ++k)
+                        output = output + " ";
+                    i = lineEnd;
+                    output = output + "\n";
                     if (isSingleSpaced == false)
                         output = output + "\n";
                 }
@@ -279,37 +339,43 @@ public class Formatter {
         }
         else if (justType == Justified.Equal) // Equally spaced
         {
+            int i;
+            int addedSpaces;
+            String[] split;
+            split = input2.split("\\s+");
+            input2 = input2.replaceAll("\\s", "");
             int fit = lineSize - input2.length();
-            int spaceCount;
             if (fit >= 0)
             {
-                spaceCount = 0;
-                for (int i = 0; i < input2.length(); ++i)
+                if (split.length != 0)
+                    addedSpaces = (lineSize - input2.length())/(split.length-1);
+                else
+                    addedSpaces = 0;
+                for(i = 0; i < split.length-1; ++i)
                 {
-                    if (input2.charAt(i) == ' ')
-                        ++spaceCount;
+                    output = output + split[i];
+                    for(int j = 0; j < addedSpaces; ++j)
+                    {
+                        output = output + " ";
+                    }
                 }
-                int addedSpaces = (lineSize - input2.length())/spaceCount;
-                String spaces = " ";
-                for (int i = 0; i < addedSpaces; ++i)
-                    spaces = spaces + " ";
-                input2.replaceAll(" ", spaces);
-                output = output + input2;
+                output = output + split[i];
+
+                output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
             else    //TODO
+            
             { 
-                int i;
-                int j;
-                while (fit < 0)
-                {
-                    spaceCount = 0;
                     
+
+                    output = output + "\n";
                     if (isSingleSpaced == false)
                         output = output + "\n";
-                }
+                
             }
+            
         }
         else if (justType == Justified.Right)   // Right justified
         {
@@ -319,6 +385,7 @@ public class Formatter {
                 for(int i = 0; i < margin; ++i)
                     output = output + " ";
                 output = output + input2;
+                output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
@@ -326,14 +393,27 @@ public class Formatter {
             {
                 int i = 0;
                 int j = 0;
-                while (margin < 0)
+                int lineEnd;
+                int fit = margin;
+                while (fit < 0) 
                 {
-                    margin = lineSize - input2.substring(lineSize*j).length();
+                    lineEnd = lineSize*j;
+                    if (lineEnd > input2.length())
+                        lineEnd = input2.length();
+                    fit = lineSize - input2.substring(lineEnd).length();
                     ++j;
+                    lineEnd = lineSize*j;
+                    if (lineEnd > input2.length())
+                        lineEnd = input2.length();
+
+                    margin = lineSize - input2.substring(i, lineEnd).length();
                     for(int k = 0; k < margin; ++k)
                         output = output + " ";
-                    output = output + input2.substring(i, lineSize*j);
-                    i = lineSize*j;
+
+                    output = output + input2.substring(i, lineEnd);
+                    i = lineEnd;
+
+                    output = output + "\n";
                     if (isSingleSpaced == false)
                         output = output + "\n";
                 }
@@ -341,11 +421,11 @@ public class Formatter {
         }
         else    // Left justified
         {
-            System.out.println("This is where it should be getting.");
             int fit = (lineSize - input2.length());
             if (fit >= 0)
             {
                 output = output + input2;
+                output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
@@ -356,7 +436,6 @@ public class Formatter {
                 int lineEnd;
                 while (fit < 0)
                 {
-                    System.out.println("We're in here. Fit = " + fit);
                     lineEnd = lineSize*j;
                     if (lineEnd > input2.length())
                         lineEnd = input2.length();
@@ -365,7 +444,6 @@ public class Formatter {
                     lineEnd = lineSize*j;
                     if (lineEnd > input2.length())
                         lineEnd = input2.length();
-                    System.out.println(input2.substring(i, lineEnd));
                     output = output + input2.substring(i, lineEnd);
                     i = lineEnd;
                     output = output + "\n";
@@ -375,6 +453,11 @@ public class Formatter {
             }
         }
         return output;
+    }
+
+    public String getErrors()
+    {
+        return errors;
     }
 }
 

@@ -1,0 +1,5 @@
+{
+    "liveshare.allowGuestDebugControl": true,
+    "liveshare.focusBehavior": "prompt",
+    "liveshare.publishWorkspaceInfo": true
+}

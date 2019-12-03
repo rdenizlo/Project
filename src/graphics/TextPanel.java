@@ -94,19 +94,21 @@ public class TextPanel extends JPanel {
                         fw.write(content);
                         fw.flush();
                         fw.close();
+                        JOptionPane.showMessageDialog(Output, "Successfully Saved");
 
 
                     } catch (Exception e2) {
                         JOptionPane.showMessageDialog(null, e2.getMessage());
                     }
 
+
                 }
-                JOptionPane.showMessageDialog(Output, "Successfully Saved");
             } else if (event.getSource() == format) {
 
                 String str = Input.getText();
                 formatter = new Formatter();
                 Output.setText(formatter.getOutput(str));
+                ErrorDisplayOP.setText(formatter.getErrors());
                 formatter = null;
 
             }
