@@ -8,7 +8,7 @@ import java.lang.String;
 
 public class Formatter {
 
-    private String input;
+    private String input, errors;
     private int lineSize;
     private boolean wrap, isSingleSpaced, isSingleColumn;
     private enum Justified {
@@ -18,6 +18,7 @@ public class Formatter {
 
     public Formatter() {
         input = "No Input Exists";
+        errors = "";
         lineSize = 80;
         wrap = false;
         isSingleSpaced = true;
@@ -76,31 +77,46 @@ public class Formatter {
                 if(check.validCharactersPerLine())
                     lineSize = Integer.parseInt(check.getParameter());
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "RIGHT":
                 if (check.validRightJustify())
                     justType = Justified.Right;
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "LEFT":
                 if (check.validLeftJustify())
                     justType = Justified.Left;
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "CENTER":
                 if (check.validCenter())
                     justType = Justified.Center;
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "EQUAL":
                 if (check.validEqualSpace())
                     justType = Justified.Equal;
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "WRAP":
                 if(check.validWrap())
@@ -111,19 +127,28 @@ public class Formatter {
                         wrap = false;
                 }
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "SINGLE":
                 if(check.validSingleSpace())
                     isSingleSpaced = true;
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "DOUBLE": 
                 if(check.validDoubleSpace())
                     isSingleSpaced = false;
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             case "COLUMN":
                 if(check.validColumns())
@@ -136,7 +161,10 @@ public class Formatter {
                     }
                 }
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
 
             // "IMMEDIATE" COMMANDS (affect only the next line) //
@@ -153,6 +181,7 @@ public class Formatter {
                 else
                 {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
                 }
                 break;
             case "INDENT": 
@@ -163,7 +192,10 @@ public class Formatter {
                         output = output + " ";
                 }
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }    
                 break;
             case "BLANK": 
                 if(check.validBlankLines())
@@ -173,9 +205,13 @@ public class Formatter {
                         output = output + "/n";
                 }
                 else
+                {
                     output = formatHandler(output, check.getCommand());
+                    errors = errors + check.getErrorMessage() + "\n";
+                }
                 break;
             default:
+                errors = errors + check.getErrorMessage() + "\n";
                 break;
         }
         return output;
@@ -437,6 +473,11 @@ public class Formatter {
             }
         }
         return output;
+    }
+
+    public String getErrors()
+    {
+        return errors;
     }
 }
 

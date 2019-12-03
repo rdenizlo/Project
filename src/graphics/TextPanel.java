@@ -107,6 +107,7 @@ public class TextPanel extends JPanel {
                 String str = Input.getText();
                 formatter = new Formatter();
                 Output.setText(formatter.getOutput(str));
+                ErrorDisplayOP.setText(formatter.getErrors());
                 formatter = null;
 
             }
