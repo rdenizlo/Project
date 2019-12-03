@@ -365,44 +365,17 @@ public class Formatter {
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
-            /*else    //TODO: fix .replaceAll (currently not working) 
+            else    //TODO
             
             { 
-                int j = 0;
-                int lineEnd;
-                String line;
-                String spaces;
-                while (fit < 0)
-                {
-                    spaceCount = 0;
-                    lineEnd = lineSize * j;
-                    if (lineEnd > input2.length())
-                        lineEnd = input2.length();
-                    fit = lineSize - input2.substring(lineEnd).length();
-                    ++j;
-                    lineEnd = lineSize*j;
-                    if (lineEnd > input2.length())
-                        lineEnd = input2.length();
-
-                    if(spaceCount != 0)
-                        addedSpaces = (lineSize - input2.substring(i,lineEnd).length())/spaceCount;
-                    else
-                        addedSpaces = 0;
-                    spaces = " ";
-                    for (int k = 0; i < addedSpaces; ++i)
-                        spaces = spaces + " ";
-                    line = input2.substring(i, lineEnd);
-                    line.replaceAll("\\s", spaces);
-                    output = output + line;
-                    i = lineEnd;
                     
 
                     output = output + "\n";
                     if (isSingleSpaced == false)
                         output = output + "\n";
-                }
+                
             }
-            */
+            
         }
         else if (justType == Justified.Right)   // Right justified
         {
