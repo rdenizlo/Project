@@ -1,4 +1,11 @@
-package graphics;
+/** 
+ *  Group:       1
+ *  Name: 		 Thomas Chilton, Ramon Deniz, Antonio Gomez, Maximus Kieu
+ *  Class:		 CSE360
+ *  Section: 	 85141
+ *  Assignment:  Final Project
+ */
+ package graphics;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -11,6 +18,14 @@ import java.text.NumberFormat;
 import javax.swing.filechooser.*;
 import logic.Formatter;
 
+/**
+ * TextPanel serves as the main front end of our GUI
+ * It allows the user to open files, save files, input text
+ * in a textArea, format text from an open file or from inputed text,
+ * and see formated text in a textArea or save it to a .txt file.
+ * 
+ * @author Antonio Gomez
+ */
 public class TextPanel extends JPanel
 {
 		//creates variables
@@ -79,7 +94,12 @@ public class TextPanel extends JPanel
 			save.addActionListener(new ButtonListener());
 			clear.addActionListener(new ButtonListener());
 			format.addActionListener(new ButtonListener());
-		}
+        }
+            /**
+             * ButtonListener handles what happens when the buttons
+             * on our GUI are pressed.
+             * 
+             */
 			private class ButtonListener implements ActionListener
 			{
 				public void actionPerformed (ActionEvent event)
