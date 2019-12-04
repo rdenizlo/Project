@@ -458,7 +458,7 @@ public class Formatter {
                 int l;
                 String line[];
                 String test = "";
-                
+
                 while (i < split.length) {
                     k = 0;
                     test = split[i];
@@ -526,6 +526,7 @@ public class Formatter {
         } else if (justType == Justified.Right) // Right justified
         {
             int margin = lineSize - input2.length();
+
             if (margin >= 0) {
                 for (int i = 0; i < margin; ++i)
                     output = output + " ";
@@ -533,7 +534,9 @@ public class Formatter {
                 output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
-            } else if (margin < 0 && wrap == true) {
+            } 
+            
+            else if (margin < 0 && wrap == true) {
                 int i = 0;
                 int k;
                 String[] split = input2.split("\\s+");
@@ -543,6 +546,7 @@ public class Formatter {
                     k = 0;
                     test = split[i];
                     line = new String[split.length];
+                    
                     // Filling line with words from split that can fit on line
                     while ((i < split.length) && ((k) < (lineSize - test.length()))) {
                         line[k] = split[i];
@@ -551,14 +555,18 @@ public class Formatter {
                         ++k;
                         ++i;
                     }
+
+
                     int numWords = k;
                     int stringLength = 0;
                     for (k = 0; k < numWords; ++k)
                         stringLength = stringLength + line[k].length();
 
                     margin = lineSize - stringLength - (numWords - 1);
+                    
                     for (k = 0; k < margin; ++k)
                         output = output + " ";
+                    
                     for (k = 0; k < numWords - 1; ++k) {
                         output = output + line[k];
                         output = output + " ";
@@ -566,7 +574,7 @@ public class Formatter {
                     output = output + line[k];
 
                     output = output + "\n";
-                    if (isSingleSpaced == false)
+                    if (isSingleSpaced == false) // Handles double space
                         output = output + "\n";
                 }
             } else if (margin > 0 && wrap == false)
@@ -574,12 +582,13 @@ public class Formatter {
         } else // Left justified
         {
             int fit = (lineSize - input2.length());
-            if (fit >= 0) {
+            if (fit >= 0) { // If the input fits on one line
                 output = output + input2;
                 output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
-            } else if (fit < 0 && wrap == true) {
+            } // If the input doesn't fit on one line and wrap is on
+            else if (fit < 0 && wrap == true) {
                 int i = 0;
                 int j = 0;
                 int k;
@@ -587,17 +596,20 @@ public class Formatter {
                 String[] split = input2.split("\\s+");
                 String test = "";
                 String line[];
+
                 while (i < split.length) {
                     k = 0;
                     test = split[i];
                     line = new String[split.length];
-                    // Filling line with words from split that can fit on line
+                    // Getting rid of trailing spaces
                     while (split[i] == "\\s+")
                         ++i;
                     test = split[i];
                     line[k] = split[i];
                     ++i;
                     ++k;
+
+                    // Creating a line that can fit in character limit
                     while ((i < split.length) && ((k) < (lineSize - test.length()))) {
                         line[k] = split[i];
                         if (i < split.length - 1)
@@ -605,11 +617,17 @@ public class Formatter {
                         ++k;
                         ++i;
                     }
+
                     int numWords = k;
                     int stringLength = 0;
+
+                    // Calculating length of the line
                     for (k = 0; k < numWords; ++k)
                         stringLength = stringLength + line[k].length();
+
                     fit = lineSize - stringLength;
+
+                    // Output
                     for (k = 0; k < numWords - 1; ++k) {
                         output = output + line[k];
                         output = output + " ";
@@ -617,7 +635,7 @@ public class Formatter {
                     output = output + line[k];
 
                     output = output + "\n";
-                    if (isSingleSpaced == false)
+                    if (isSingleSpaced == false) // Double space handler
                         output = output + "\n";
                 }
             } else if (fit < 0 && wrap == false)
