@@ -289,7 +289,6 @@ public class Formatter {
 
     // Handles adding things to output with current formatting settings
     // TODO:
-    //      Equally spaced 
     //      Wrap
     private String formatHandler(String input1, String input2)
     {
@@ -350,14 +349,21 @@ public class Formatter {
             {
                 if (split.length != 1)
                 {
+                    int extraSpaces;
                     // Calculating added spaces
                     addedSpaces = (lineSize - input2.length())/(split.length-1);
+                    extraSpaces = lineSize - (input2.length() + addedSpaces*(split.length-1));
                     for(i = 0; i < split.length-1; ++i)
                     {
                         output = output + split[i];
                         for(int j = 0; j < addedSpaces; ++j)
                         {
                             output = output + " ";
+                        }
+                        if (extraSpaces > 0)
+                        {
+                            output = output + " ";
+                            --extraSpaces;
                         }
                     }
                     output = output + split[i];
@@ -387,7 +393,7 @@ public class Formatter {
                     test = split[i];
                     line = new String[split.length];
                     // Filling line with words from split that can fit on line
-                    while(i < split.length && k < (lineSize - test.length()))
+                    while((i < split.length) && ((k)  < (lineSize - test.length())))
                     {
                         line[k] = split[i];
                         if(i < split.length-1)
@@ -399,6 +405,7 @@ public class Formatter {
                     if(numWords != 1)
                     {
                         int j;
+                        int extraSpaces;
                         // Calculating spaces to add
                         int stringLength = 0;
                         for(l = 0; l < numWords; ++l)
@@ -406,8 +413,9 @@ public class Formatter {
                             stringLength = stringLength + line[l].length();
                         }
                         addedSpaces = (lineSize - stringLength)/(numWords-1);
-                        if(addedSpaces < 1)
+                        if(addedSpaces < 1) // shouldn't occur
                             addedSpaces = 1;
+                        extraSpaces = lineSize - (addedSpaces*(numWords-1) + stringLength);
                         // Output
                         j = 0;
                         while(j < numWords-1)
@@ -416,6 +424,12 @@ public class Formatter {
                             for(l = 0; l < addedSpaces; ++l)
                             {
                                 output = output + " ";
+                            }
+                            // handling extra room
+                            if (extraSpaces > 0)
+                            {
+                                output = output + " ";
+                                --extraSpaces;
                             }
                             ++j;
                         }
@@ -429,7 +443,7 @@ public class Formatter {
                     else // Case for if there is only one word on the line
                     {
                         // It's treated identically to center justification
-                        addedSpaces = ((lineSize - line.length)/2);
+                        addedSpaces = ((lineSize - line[0].length())/2);
                         for (int j = 0; j < addedSpaces; ++j)
                             output = output + " ";
                         output = output + line[0];
