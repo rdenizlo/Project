@@ -2,6 +2,7 @@ package logic;
 
 import javax.lang.model.util.ElementScanner6;
 import java.lang.String;
+import java.util.Arrays;
 
 // Currently not being used
 //import javax.lang.model.util.ElementScanner6;
@@ -227,7 +228,6 @@ public class Formatter {
     // parameters and its complexity
     private String doubleColumnHandler(String output, String[] doc, int index, int arraySize)
     {
-        System.out.println("We're in doubleColumnHandler");
         /*
             Basic runthrough of implementation of double columns:
                 Parse the document and see if the format is ever changed 
@@ -331,6 +331,7 @@ public class Formatter {
                     for(int k = 0; k < margins; ++k)
                         output = output + " ";
                     i = lineEnd;
+
                     output = output + "\n";
                     if (isSingleSpaced == false)
                         output = output + "\n";
@@ -347,32 +348,97 @@ public class Formatter {
             int fit = lineSize - input2.length();
             if (fit >= 0)
             {
-                if (split.length != 0)
-                    addedSpaces = (lineSize - input2.length())/(split.length-1);
-                else
-                    addedSpaces = 0;
-                for(i = 0; i < split.length-1; ++i)
+                if (split.length != 1)
                 {
-                    output = output + split[i];
-                    for(int j = 0; j < addedSpaces; ++j)
+                    // Calculating added spaces
+                    addedSpaces = (lineSize - input2.length())/(split.length-1);
+                    for(i = 0; i < split.length-1; ++i)
                     {
-                        output = output + " ";
+                        output = output + split[i];
+                        for(int j = 0; j < addedSpaces; ++j)
+                        {
+                            output = output + " ";
+                        }
                     }
+                    output = output + split[i];
                 }
-                output = output + split[i];
+                else // Case for if there is only one word on a line
+                {
+                    addedSpaces = (lineSize - input2.length()) / 2;
+                    for(i = 0; i < addedSpaces; ++i)
+                        output = output + " ";
+                    output = output + input2;
+                }
 
                 output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
-            else    //TODO
-            
+            else    
             { 
-                    
+                i = 0;
+                int k = 0;
+                int l;
+                String line[];
+                String test = "";
+                while(i < split.length)
+                {
+                    k = 0;
+                    test = split[i];
+                    line = new String[split.length];
+                    // Filling line with words from split that can fit on line
+                    while(i < split.length && k < (lineSize - test.length()))
+                    {
+                        line[k] = split[i];
+                        if(i < split.length-1)
+                            test = test + split[i + 1];
+                        ++k;
+                        ++i;
+                    }
+                    int numWords = k;
+                    if(numWords != 1)
+                    {
+                        int j;
+                        // Calculating spaces to add
+                        int stringLength = 0;
+                        for(l = 0; l < numWords; ++l)
+                        {
+                            stringLength = stringLength + line[l].length();
+                        }
+                        addedSpaces = (lineSize - stringLength)/(numWords-1);
+                        if(addedSpaces < 1)
+                            addedSpaces = 1;
+                        // Output
+                        j = 0;
+                        while(j < numWords-1)
+                        {
+                            output = output + line[j];
+                            for(l = 0; l < addedSpaces; ++l)
+                            {
+                                output = output + " ";
+                            }
+                            ++j;
+                        }
+                        output = output + line[j];
 
-                    output = output + "\n";
-                    if (isSingleSpaced == false)
+                        // Add a newline character at the end of the line
                         output = output + "\n";
+                        if (isSingleSpaced == false)
+                            output = output + "\n";
+                    }
+                    else // Case for if there is only one word on the line
+                    {
+                        // It's treated identically to center justification
+                        addedSpaces = ((lineSize - line.length)/2);
+                        for (int j = 0; j < addedSpaces; ++j)
+                            output = output + " ";
+                        output = output + line[0];
+
+                        output = output + "\n";
+                        if (isSingleSpaced == false)
+                            output = output + "\n";
+                    }
+                }
                 
             }
             
