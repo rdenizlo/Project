@@ -7,7 +7,7 @@
  */
 
 /**
-* 
+*  Class FileTypeFilter handles file extensions
 * 
 *  @author Antonio Gomez
 */
@@ -23,10 +23,11 @@ public class FileTypeFilter extends FileFilter {
     private final String description;
 
     /**
-     * Instantiates a class of type FileTypeFilter and sets the extent
-
-     * @param extension
-     * @param description
+     * Instantiates a class of type FileTypeFilter and sets the extension and
+     * description
+     * 
+     * @param extension file extension type
+     * @param description file
      */
     public FileTypeFilter(String extension, String description) {
         this.extension = extension;
@@ -34,6 +35,9 @@ public class FileTypeFilter extends FileFilter {
 
     }
 
+    /**
+     * Determines the file type and validates the file extension.
+     */
     @Override
     public boolean accept(File file) {
         if (file.isDirectory()) {
@@ -42,6 +46,9 @@ public class FileTypeFilter extends FileFilter {
         return file.getName().endsWith(extension);
     }
 
+    /**
+     * Retrieve the description
+     */
     @Override
     public String getDescription() {
         return description + String.format(" (*%s)", extension);
