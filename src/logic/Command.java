@@ -28,7 +28,7 @@ public class Command {
     /**
      * Creates a Command instance and identifies the command being validated.
      * 
-     * @param command
+     * @param command Command input being validated
      */
     public Command(String command) {
         this.command = command;
@@ -136,7 +136,7 @@ public class Command {
     /**
      * Validates if the command input meets the expected length.
      * 
-     * @param expectedLength
+     * @param expectedLength the expected length that the command input should be
      */
     private boolean validLength(int expectedLength) {
         if (expectedLength != command.length()) {

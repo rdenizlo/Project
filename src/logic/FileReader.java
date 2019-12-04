@@ -32,6 +32,8 @@ public class FileReader {
     /**
      * Reads a file and its contents and returns a String type that stores all of
      * the file's contents.
+     * 
+     * @param fileName The name of the file being turned into a String
      */
     public String getText(String fileName) {
         StringBuilder text = new StringBuilder();

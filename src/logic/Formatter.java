@@ -249,9 +249,9 @@ public class Formatter {
     }
 
     /**
+     * Returns the number of newline characters in the given parameter value.
      * 
-     * 
-     * @param str
+     * @param str the string being identified
      * @return count
      * @see doubleColumnHandler
      */
@@ -267,10 +267,10 @@ public class Formatter {
      * Our doubleColumnHandler class handles inputed text when
      * a double column format command has been executed.
      * 
-     * @param output
-     * @param doc
-     * @param index
-     * @param arraySize
+     * @param output the output already formatted
+     * @param doc the input text as an array split for each line
+     * @param index the position in which double column was detected
+     * @param arraySize the array size of doc
      * @return output
      */
     private String doubleColumnHandler(String output, String[] doc, int index, int arraySize) {
@@ -355,21 +355,28 @@ public class Formatter {
             } else if (margins < 0 && wrap == true) {
                 int i = 0;
                 int k;
+                //Here we split our input into word sections
                 String[] split = input2.split("\\b");
                 String test = "";
                 String line[];
+
 
                 while (i < split.length) {
                     k = 0;
                     test = split[i];
                     line = new String[split.length];
                     // Filling line with words from split that can fit on line
+
+                    // This gets rid of any possible trailing spaces.
                     while (split[i] == "\\s+")
                         ++i;
                     test = split[i];
                     line[k] = split[i];
                     ++i;
                     ++k;
+
+                    // Here we construct a line that fits in our character limit
+                    // Using the split input
                     while ((i < split.length) && test.length() < lineSize) {
                         line[k] = split[i];
                         if (i < split.length - 1)
@@ -379,20 +386,25 @@ public class Formatter {
                     }
                     int numWords = k;
                     int stringLength = 0;
+
+
                     for (k = 0; k < numWords; ++k)
                         stringLength = stringLength + line[k].length();
 
                     margins = (lineSize - stringLength) / 2;
 
+                    // Output spaces before our input line
                     for (k = 0; k < margins; ++k)
                         output = output + " ";
+                    // Input line
                     for (k = 0; k < numWords; ++k)
                         output = output + line[k];
+                    // Output spaces after input
                     for (k = 0; k < margins; ++k)
                         output = output + " ";
 
                     output = output + "\n";
-                    if (isSingleSpaced == false)
+                    if (isSingleSpaced == false) // Handles double spaced format
                         output = output + "\n";
                 }
             } 
@@ -408,6 +420,8 @@ public class Formatter {
             split = input2.split("\\s+");
             input2 = input2.replaceAll("\\s", "");
             int fit = lineSize - input2.length();
+            
+            // Handles when the input can fit on one line
             if (fit >= 0) {
                 if (split.length != 1) {
                     int extraSpaces;
@@ -436,12 +450,15 @@ public class Formatter {
                 output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
+            // Handles when the input can't fit on one line and wrap
+            // is turned on
             } else if (fit < 0 && wrap == true) {
                 i = 0;
                 int k = 0;
                 int l;
                 String line[];
                 String test = "";
+                
                 while (i < split.length) {
                     k = 0;
                     test = split[i];
@@ -455,6 +472,8 @@ public class Formatter {
                         ++i;
                     }
                     int numWords = k;
+                    
+                    // If there is more than one word on a line
                     if (numWords != 1) {
                         int j;
                         int extraSpaces;
@@ -464,7 +483,7 @@ public class Formatter {
                             stringLength = stringLength + line[l].length();
                         }
                         addedSpaces = (lineSize - stringLength) / (numWords - 1);
-                        if (addedSpaces < 1) // shouldn't occur
+                        if (addedSpaces < 1) // shouldn't occur but just in case
                             addedSpaces = 1;
                         extraSpaces = lineSize - (addedSpaces * (numWords - 1) + stringLength);
                         // Output
