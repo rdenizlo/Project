@@ -2,6 +2,8 @@ package logic;
 
 import javax.lang.model.util.ElementScanner6;
 import java.lang.String;
+import java.util.Arrays;
+import java.util.Scanner;
 
 // Currently not being used
 //import javax.lang.model.util.ElementScanner6;
@@ -123,8 +125,12 @@ public class Formatter {
             case "WRAP":
                 if(check.validWrap())
                 {
-                    if (check.getParameter() == "+")
+                    System.out.println("Wrap command detected");
+                    if (check.getParameter().equals("+"))
+                    {
+                        System.out.println("wrap set to true");
                         wrap = true;
+                    }
                     else
                         wrap = false;
                 }
@@ -223,11 +229,19 @@ public class Formatter {
         return output;
     }
 
+    private int getInstances(String str){
+        int count = 0;
+        for(int i = 0; i < str.length(); i++)
+            if(str.charAt(i) == '\n')
+                count++;
+        return count;
+    }
+
     // Gave double columns its own method because of its need for unique
     // parameters and its complexity
     private String doubleColumnHandler(String output, String[] doc, int index, int arraySize)
     {
-        System.out.println("We're in doubleColumnHandler");
+        //TODO
         /*
             Basic runthrough of implementation of double columns:
                 Parse the document and see if the format is ever changed 
@@ -238,59 +252,52 @@ public class Formatter {
                 chars from string one on the left and 35 chars from string two on the
                 right.
         */
+        Formatter column1 = new Formatter();
+        Formatter column2 = new Formatter();
+        column1.isSingleSpaced = this.isSingleSpaced;
+        column2.isSingleSpaced = this.isSingleSpaced;
+        column1.lineSize = 35;
+        column2.lineSize = 35;
+        column1.wrap = true;
+        column2.wrap = true;
+        int last = index;
+        StringBuilder builder = new StringBuilder();
+        while(last < doc.length && doc[last] != null && !doc[last].contains("-a1")){
+            builder.append(doc[last]);
+            last++;
+        }
+        String[] columnDoc = builder.toString().split("\\s+");
+
+        // get first half of text and format into column 1
+        int left = 0;
+        int right = columnDoc.length - 1;
+
         String leftString = "";
         String rightString = "";
-        String lineCheck;
+        while(left <= right){
+            int leftCount = getInstances(column1.getOutput(leftString));
+            int rightCount = getInstances(column2.getOutput(rightString));
+            if(leftCount == rightCount + (isSingleSpaced? 1 : 2) || leftCount == rightCount)
+                leftString += columnDoc[left++] + " ";
+            else
+                rightString = columnDoc[right--] + " " + rightString;
+        }
 
-        boolean commandFound = false;
-        int i = index;
-        int a = 0;
-        int b = 34;
-        int j;
-        // We need to go through the document and check for -a1 commands
-        // If we find one we will use that line index.
-        while (i < arraySize && commandFound == false)
-        {
-            if(doc[i].charAt(0) == '-')
-            {
-                lineCheck = doc[i];
-                Command check = new Command(lineCheck);
-                output = commandHandler(check, output, doc[i+1]);
-                if (check.validColumns())
-                    if (check.getParameter().equals("1"))
-                        commandFound = true;
-            }
-            ++i;
+        Scanner scanner1 = new Scanner(column1.getOutput(leftString));
+        Scanner scanner2 = new Scanner(column2.getOutput(rightString));
+        while(scanner1.hasNextLine() && scanner2.hasNextLine()){
+            output = output + scanner1.nextLine() + "          " + scanner2.nextLine();
+            output = output + "\n";
         }
-        int halfway = (i - index)/2;
-        // Handling leftString
-        for (j = 0; j < halfway; ++j)
-        {
-            leftString = leftString + doc[j];
-        }
-        // Handling rightString
-        for (j = halfway; j < i; ++j)
-        {
-            rightString = rightString + doc[j];
-        }
-        j = 0;
-        while (b < rightString.length() && b < leftString.length())
-        {
-            output = output + leftString.substring(a, b) + "          "
-                + rightString.substring(a, b);
-            a = a + 35;
-            b = b + 35;
-            if (isSingleSpaced == false)
-                output = output + "\n";
-        }
-        isSingleColumn = true;
+        if(scanner1.hasNextLine())
+            output = output + scanner1.nextLine();
+
         return output;
     }
 
     // Handles adding things to output with current formatting settings
     // TODO:
-    //      Equally spaced 
-    //      Wrap
+    //      Fix end of line cutoff
     private String formatHandler(String input1, String input2)
     {
         String output = input1;
@@ -308,33 +315,60 @@ public class Formatter {
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
-            else
+            else if (margins < 0 && wrap == true)
             {
                 int i = 0;
                 int j = 0;
+                int k;
                 int fit = margins;
                 int lineEnd;
-                while(fit < 0) 
+                String[] split = input2.split("\\b");
+                String test = "";
+                String line[];
+                while (i < split.length) 
                 {
-                    lineEnd = lineSize*j;
-                    if (lineEnd > input2.length())
-                        lineEnd = input2.length();
-                    fit = lineSize - input2.substring(lineEnd).length();
-                    margins = (lineSize - input2.substring(lineEnd).length()) / 2;
-                    ++j;
-                    lineEnd = lineSize*j;
-                    if (lineEnd > input2.length())
-                        lineEnd = input2.length();
-                    for (int k = 0; k < margins; ++k)
+                    k = 0;
+                    test = split[i];
+                    line = new String[split.length];
+                    // Filling line with words from split that can fit on line
+                    while (split[i] == "\\s+")
+                        ++i;
+                    test = split[i];
+                    line[k] = split[i];
+                    ++i;
+                    ++k;
+                    while((i < split.length) && test.length() < lineSize)
+                    {
+                        line[k] = split[i];
+                        if(i < split.length-1)
+                            test = test + split[i + 1];
+                        ++k;
+                        ++i;
+                    }
+                    int numWords = k;
+                    int stringLength = 0;
+                    for(k = 0; k < numWords; ++k)
+                        stringLength = stringLength + line[k].length();
+
+                    margins = (lineSize - stringLength)/2;
+
+                    fit = lineSize - stringLength;
+
+                    for (k = 0; k < margins; ++k)
                         output = output + " ";
-                    output = output + input2.substring(i, lineEnd);
-                    for(int k = 0; k < margins; ++k)
+                    for (k = 0; k < numWords; ++k)
+                        output = output + line[k];
+                    for(k = 0; k < margins; ++k)
                         output = output + " ";
-                    i = lineEnd;
+
                     output = output + "\n";
                     if (isSingleSpaced == false)
                         output = output + "\n";
                 }
+            }
+            else if (wrap == false && margins < 0)
+            {
+                output = wrapHandler(output, input2);
             }
         }
         else if (justType == Justified.Equal) // Equally spaced
@@ -347,34 +381,116 @@ public class Formatter {
             int fit = lineSize - input2.length();
             if (fit >= 0)
             {
-                if (split.length != 0)
-                    addedSpaces = (lineSize - input2.length())/(split.length-1);
-                else
-                    addedSpaces = 0;
-                for(i = 0; i < split.length-1; ++i)
+                if (split.length != 1)
                 {
-                    output = output + split[i];
-                    for(int j = 0; j < addedSpaces; ++j)
+                    int extraSpaces;
+                    // Calculating added spaces
+                    addedSpaces = (lineSize - input2.length())/(split.length-1);
+                    extraSpaces = lineSize - (input2.length() + addedSpaces*(split.length-1));
+                    for(i = 0; i < split.length-1; ++i)
                     {
-                        output = output + " ";
+                        output = output + split[i];
+                        for(int j = 0; j < addedSpaces; ++j)
+                        {
+                            output = output + " ";
+                        }
+                        if (extraSpaces > 0)
+                        {
+                            output = output + " ";
+                            --extraSpaces;
+                        }
                     }
+                    output = output + split[i];
                 }
-                output = output + split[i];
+                else // Case for if there is only one word on a line
+                {
+                    addedSpaces = (lineSize - input2.length()) / 2;
+                    for(i = 0; i < addedSpaces; ++i)
+                        output = output + " ";
+                    output = output + input2;
+                }
 
                 output = output + "\n";
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
-            else    //TODO
-            
+            else if (fit < 0 && wrap == true)   
             { 
-                    
+                i = 0;
+                int k = 0;
+                int l;
+                String line[];
+                String test = "";
+                while(i < split.length)
+                {
+                    k = 0;
+                    test = split[i];
+                    line = new String[split.length];
+                    // Filling line with words from split that can fit on line
+                    while((i < split.length) && ((k)  < (lineSize - test.length())))
+                    {
+                        line[k] = split[i];
+                        if(i < split.length-1)
+                            test = test + split[i + 1];
+                        ++k;
+                        ++i;
+                    }
+                    int numWords = k;
+                    if(numWords != 1)
+                    {
+                        int j;
+                        int extraSpaces;
+                        // Calculating spaces to add
+                        int stringLength = 0;
+                        for(l = 0; l < numWords; ++l)
+                        {
+                            stringLength = stringLength + line[l].length();
+                        }
+                        addedSpaces = (lineSize - stringLength)/(numWords-1);
+                        if(addedSpaces < 1) // shouldn't occur
+                            addedSpaces = 1;
+                        extraSpaces = lineSize - (addedSpaces*(numWords-1) + stringLength);
+                        // Output
+                        j = 0;
+                        while(j < numWords-1)
+                        {
+                            output = output + line[j];
+                            for(l = 0; l < addedSpaces; ++l)
+                            {
+                                output = output + " ";
+                            }
+                            // handling extra room
+                            if (extraSpaces > 0)
+                            {
+                                output = output + " ";
+                                --extraSpaces;
+                            }
+                            ++j;
+                        }
+                        output = output + line[j];
 
-                    output = output + "\n";
-                    if (isSingleSpaced == false)
+                        // Add a newline character at the end of the line
                         output = output + "\n";
+                        if (isSingleSpaced == false)
+                            output = output + "\n";
+                    }
+                    else // Case for if there is only one word on the line
+                    {
+                        // It's treated identically to center justification
+                        addedSpaces = ((lineSize - line[0].length())/2);
+                        for (int j = 0; j < addedSpaces; ++j)
+                            output = output + " ";
+                        output = output + line[0];
+
+                        output = output + "\n";
+                        if (isSingleSpaced == false)
+                            output = output + "\n";
+                    }
+                }
                 
             }
+            else if (fit > 0 && wrap == false)
+                output = wrapHandler(output, input2);
             
         }
         else if (justType == Justified.Right)   // Right justified
@@ -389,35 +505,49 @@ public class Formatter {
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
-            else
+            else if (margin < 0 && wrap == true)
             {
                 int i = 0;
-                int j = 0;
-                int lineEnd;
-                int fit = margin;
-                while (fit < 0) 
+                int k;
+                String[] split = input2.split("\\s+");
+                String test = "";
+                String line[];
+                while (i < split.length) 
                 {
-                    lineEnd = lineSize*j;
-                    if (lineEnd > input2.length())
-                        lineEnd = input2.length();
-                    fit = lineSize - input2.substring(lineEnd).length();
-                    ++j;
-                    lineEnd = lineSize*j;
-                    if (lineEnd > input2.length())
-                        lineEnd = input2.length();
+                    k = 0;
+                    test = split[i];
+                    line = new String[split.length];
+                    // Filling line with words from split that can fit on line
+                    while((i < split.length) && ((k)  < (lineSize - test.length())))
+                    {
+                        line[k] = split[i];
+                        if(i < split.length-1)
+                            test = test + split[i + 1];
+                        ++k;
+                        ++i;
+                    }
+                    int numWords = k;
+                    int stringLength = 0;
+                    for(k = 0; k < numWords; ++k)
+                        stringLength = stringLength + line[k].length();
 
-                    margin = lineSize - input2.substring(i, lineEnd).length();
-                    for(int k = 0; k < margin; ++k)
+                    margin = lineSize - stringLength - (numWords-1);
+                    for(k = 0; k < margin; ++k)
                         output = output + " ";
-
-                    output = output + input2.substring(i, lineEnd);
-                    i = lineEnd;
+                    for (k = 0; k < numWords-1; ++k)
+                    {
+                        output = output + line[k];
+                        output = output + " ";
+                    }
+                    output = output + line[k];
 
                     output = output + "\n";
                     if (isSingleSpaced == false)
                         output = output + "\n";
                 }
             }
+            else if (margin > 0 && wrap == false)
+                output = wrapHandler(output, input2);
         }
         else    // Left justified
         {
@@ -429,31 +559,69 @@ public class Formatter {
                 if (isSingleSpaced == false)
                     output = output + "\n";
             }
-            else
+            else if (fit < 0 && wrap == true) 
             {
                 int i = 0;
                 int j = 0;
+                int k;
                 int lineEnd;
-                while (fit < 0)
+                String[] split = input2.split("\\s+");
+                String test = "";
+                String line[];
+                while (i < split.length) 
                 {
-                    lineEnd = lineSize*j;
-                    if (lineEnd > input2.length())
-                        lineEnd = input2.length();
-                    fit = lineSize - input2.substring(lineEnd).length();
-                    ++j;
-                    lineEnd = lineSize*j;
-                    if (lineEnd > input2.length())
-                        lineEnd = input2.length();
-                    output = output + input2.substring(i, lineEnd);
-                    i = lineEnd;
+                    k = 0;
+                    test = split[i];
+                    line = new String[split.length];
+                    // Filling line with words from split that can fit on line
+                    while (split[i] == "\\s+")
+                        ++i;
+                    test = split[i];
+                    line[k] = split[i];
+                    ++i;
+                    ++k;
+                    while((i < split.length) && ((k)  < (lineSize - test.length())))
+                    {
+                        line[k] = split[i];
+                        if(i < split.length-1)
+                            test = test + split[i + 1];
+                        ++k;
+                        ++i;
+                    }
+                    int numWords = k;
+                    int stringLength = 0;
+                    for(k = 0; k < numWords; ++k)
+                        stringLength = stringLength + line[k].length();
+                    fit = lineSize - stringLength;
+                    for (k = 0; k < numWords-1; ++k)
+                    {
+                        output = output + line[k];
+                        output = output + " ";
+                    }
+                    output = output + line[k];
+
                     output = output + "\n";
                     if (isSingleSpaced == false)
                         output = output + "\n";
-                } 
+                }
             }
+            else if (fit < 0 && wrap == false)
+                output = wrapHandler(output, input2);
         }
         return output;
+
     }
+
+    private String wrapHandler (String input1, String input2)
+    {
+        String output = input1;
+        output = output + input2;
+        output = output + "\n";
+        if (isSingleSpaced == false)
+            output = output + "\n";
+        return output;
+    }
+
 
     public String getErrors()
     {
