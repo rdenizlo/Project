@@ -23,7 +23,7 @@ public class FileTypeFilter extends FileFilter {
     private final String description;
 
     /**
-     * 
+     * Instantiates a class of type FileTypeFilter and sets the extent
 
      * @param extension
      * @param description
