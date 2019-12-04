@@ -1,14 +1,32 @@
-package graphics;
+/** 
+ *  Group:       1
+ *  Name: 		 Thomas Chilton, Ramon Deniz, Antonio Gomez, Maximus Kieu
+ *  Class:		 CSE360
+ *  Section: 	 85141
+ *  Assignment:  Final Project
+ */
+ package graphics;
 
 import javax.swing.*;
 import java.util.Scanner;
 
+/**
+ * Our OpenFile class handles when
+ * files are opened.
+ * 
+ * @author: Antonio Gomez
+ */
 public class OpenFile {
 
     //Declare Variable
     JFileChooser filechooser = new JFileChooser();
     StringBuilder sb = new StringBuilder();
 
+    /**
+     * PickMe handles file exceptions
+     * 
+     * @throws Exception
+     */
     public void PickMe() throws Exception {
 
         if (filechooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
